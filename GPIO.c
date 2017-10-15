@@ -330,30 +330,23 @@ uint32 GPIO_readPIN(GPIO_portNameType portName, uint8 pin){
 }
 void GPIO_setPIN(GPIO_portNameType portName, uint8 pin){
 	uint32 realPin;
-	uint32 value = 0;
-
 	realPin = valuePIN(pin);
 
 	switch(portName){
 	case GPIO_A:
 		GPIOA->PSOR |= realPin;
-		value = GPIOA->PSOR;
 		break;
 	case GPIO_B:
 		GPIOB->PSOR |= realPin;
-		value = GPIOB->PSOR;
 		break;
 	case GPIO_C:
 		GPIOC->PSOR |= realPin;
-		value = GPIOC->PSOR;
 		break;
 	case GPIO_D:
 		GPIOD->PSOR |= realPin;
-		value = GPIOD->PSOR;
 		break;
 	case GPIO_E:
 		GPIOE->PSOR |= realPin;
-		value = GPIOE->PSOR;
 		break;
 	default:
 		break;
@@ -361,7 +354,6 @@ void GPIO_setPIN(GPIO_portNameType portName, uint8 pin){
 }
 void GPIO_clearPIN(GPIO_portNameType portName, uint8 pin){
 	uint32 realPin;
-
 	realPin = valuePIN(pin);
 
 	switch(portName){

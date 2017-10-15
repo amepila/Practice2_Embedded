@@ -19,8 +19,8 @@
 #define S 65000
 
 void setAllRGB(){
-	//GPIO_clockGating(GPIO_B);
-	//GPIO_clockGating(GPIO_E);
+	GPIO_clockGating(GPIO_B);
+	GPIO_clockGating(GPIO_E);
 
 	GPIO_pinControlRegisterType pinControlRegisterPortB = GPIO_MUX1;
 	GPIO_pinControlRegisterType pinControlRegisterPortE = GPIO_MUX1;
@@ -49,63 +49,93 @@ void clearAllRGB(){
 }
 
 
+void delay(uint32 delay){
+	volatile uint32 counter;
+
+	for(counter=delay;counter>0;counter--){
+	}
+}
 
 void Green(void){
 	/**Leds Off**/
 	GPIO_setPIN(GPIO_B, BIT21);
 	GPIO_setPIN(GPIO_B, BIT22);
 	GPIO_setPIN(GPIO_E, BIT26);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_SHORT);
+	delay(L);
 
 	/**Led On **/
 	GPIO_clearPIN(GPIO_E, BIT26);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_LONG);
+	delay(L);
 
+	/*Led Off*/
+	GPIO_setPIN(GPIO_E, BIT26);
+	delay(S);
 }
 void Blue(void){
 	/**Leds Off**/
 	GPIO_setPIN(GPIO_B, BIT21);
 	GPIO_setPIN(GPIO_B, BIT22);
 	GPIO_setPIN(GPIO_E, BIT26);
+	delay(L);
+
 	/**Led On **/
 	GPIO_clearPIN(GPIO_B, BIT21);
+	delay(L);
 
-
+	/*Led Off*/
+	GPIO_setPIN(GPIO_B, BIT21);
+	delay(S);
 }
 void Red(void){
 	/**Leds Off**/
 	GPIO_setPIN(GPIO_B, BIT21);
 	GPIO_setPIN(GPIO_B, BIT22);
 	GPIO_setPIN(GPIO_E, BIT26);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_SHORT);
+	delay(L);
 
 	/**Led On **/
 	GPIO_clearPIN(GPIO_B, BIT22);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_LONG);
+	delay(L);
+
+	/**Led Off **/
+	GPIO_setPIN(GPIO_B, BIT22);
+	delay(S);
 }
 void Purple(void){
 	/**Leds Off**/
 	GPIO_setPIN(GPIO_B, BIT21);
 	GPIO_setPIN(GPIO_B, BIT22);
 	GPIO_setPIN(GPIO_E, BIT26);
+	delay(L);
 
 	/**Led On **/
 	GPIO_clearPIN(GPIO_B, BIT21);
 	GPIO_clearPIN(GPIO_B, BIT22);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_LONG);
+	delay(L);
+
+	/**Led Off **/
+	GPIO_setPIN(GPIO_B, BIT21);
+	GPIO_setPIN(GPIO_B, BIT22);
+	delay(S);
 }
 void White(void){
 	/**Leds Off**/
 	GPIO_setPIN(GPIO_B, BIT21);
 	GPIO_setPIN(GPIO_B, BIT22);
 	GPIO_setPIN(GPIO_E, BIT26);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_SHORT);
+	delay(L);
 
 	/**Led On **/
 	GPIO_clearPIN(GPIO_B, BIT21);
 	GPIO_clearPIN(GPIO_B, BIT22);
 	GPIO_clearPIN(GPIO_E, BIT26);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_LONG);
+	delay(L);
+
+	/**Led Off **/
+	GPIO_setPIN(GPIO_B, BIT21);
+	GPIO_setPIN(GPIO_B, BIT22);
+	GPIO_setPIN(GPIO_E, BIT26);
+	delay(S);
 
 }
 void Yellow(void){
@@ -113,10 +143,15 @@ void Yellow(void){
 	GPIO_setPIN(GPIO_B, BIT21);
 	GPIO_setPIN(GPIO_B, BIT22);
 	GPIO_setPIN(GPIO_E, BIT26);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_SHORT);
+	delay(L);
 
 	/**Led On **/
 	GPIO_clearPIN(GPIO_B, BIT22);
 	GPIO_clearPIN(GPIO_E, BIT26);
-	//PIT_delay(PIT_0,SYSTEM_CLOCK,DELAY_LONG);
+	delay(L);
+
+	/**Led Off **/
+	GPIO_setPIN(GPIO_B, BIT22);
+	GPIO_setPIN(GPIO_E, BIT26);
+	delay(S);
 }

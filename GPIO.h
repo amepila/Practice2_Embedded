@@ -11,9 +11,7 @@
 
 #include "DataTypeDefinitions.h"
 
-
 #define ERROR 0x02
-
 
 typedef struct
 {
@@ -23,8 +21,6 @@ typedef struct
 	uint8 flagPortD : 1;
 	uint8 flagPortE : 1;
 } GPIO_interruptFlags_t;
-
-
 
 
 /** Constant that represent the clock enable for GPIO A */
@@ -100,9 +96,6 @@ typedef enum{GPIO_A, /*!< Definition to select GPIO A */
 
 /*! This data type is used to configure the pin control register*/
 typedef const uint32 GPIO_pinControlRegisterType;
-
-
-
 
 
 uint8 GPIO_clearIRQStatus(GPIO_portNameType gpio);

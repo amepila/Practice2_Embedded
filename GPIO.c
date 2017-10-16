@@ -12,6 +12,7 @@
 #include "MK64F12.h"
 #include "GPIO.h"
 #include "DataTypeDefinitions.h"
+#include "Buttons.h"
 
 
 static GPIO_interruptFlags_t GPIO_intrStatusFlag;
@@ -32,14 +33,15 @@ uint32 valuePIN(uint8 bit){
 
 void PORTA_IRQHandler()
 {
-	GPIO_intrStatusFlag.flagPortA  = TRUE;
 	GPIO_readInterrupt(GPIO_A);
 
 	if((1<<BIT1) == GPIO_readInterrupt(GPIO_A)){
-
+		GPIO_intrStatusFlag.flagPortA  = TRUE;
+		Button_statusFlag(GPIO_A,BIT1);
 	}
 	if((1<<BIT2) == GPIO_readInterrupt(GPIO_A)){
-
+		GPIO_intrStatusFlag.flagPortA  = TRUE;
+		Button_statusFlag(GPIO_A,BIT2);
 	}
 
 	GPIO_clearInterrupt(GPIO_A);
@@ -47,14 +49,15 @@ void PORTA_IRQHandler()
 
 void PORTB_IRQHandler()
 {
-	GPIO_intrStatusFlag.flagPortB  = TRUE;
 	GPIO_readInterrupt(GPIO_B);
 
 	if((1<<BIT9) == GPIO_readInterrupt(GPIO_B)){
-
+		GPIO_intrStatusFlag.flagPortB  = TRUE;
+		Button_statusFlag(GPIO_B,BIT9);
 	}
 	if((1<<BIT23) == GPIO_readInterrupt(GPIO_B)){
-
+		GPIO_intrStatusFlag.flagPortB  = TRUE;
+		Button_statusFlag(GPIO_B,BIT23);
 	}
 
 	GPIO_clearInterrupt(GPIO_B);
@@ -62,14 +65,15 @@ void PORTB_IRQHandler()
 
 void PORTC_IRQHandler()
 {
-	GPIO_intrStatusFlag.flagPortC  = TRUE;
 	GPIO_readInterrupt(GPIO_C);
 
 	if((1<<BIT2) == GPIO_readInterrupt(GPIO_C)){
-
+		GPIO_intrStatusFlag.flagPortC  = TRUE;
+		Button_statusFlag(GPIO_C,BIT2);
 	}
 	if((1<<BIT3) == GPIO_readInterrupt(GPIO_C)){
-
+		GPIO_intrStatusFlag.flagPortC  = TRUE;
+		Button_statusFlag(GPIO_C,BIT3);
 	}
 
 	GPIO_clearInterrupt(GPIO_C);
@@ -88,6 +92,7 @@ void PORTE_IRQHandler()
 	GPIO_readInterrupt(GPIO_E);
 	GPIO_clearInterrupt(GPIO_E);
 }
+
 
 uint8 GPIO_getIRQStatus(GPIO_portNameType gpio)
 {
@@ -144,29 +149,29 @@ uint8 GPIO_clearIRQStatus(GPIO_portNameType gpio)
 }
 
 uint32 GPIO_readInterrupt(GPIO_portNameType portName){
-	uint32 valueIntr = 0;
+	uint32 intrValue = 0;
 
 	switch(portName)/** Selecting the GPIO for clock enabling*/
 	{
 		case GPIO_A: /** GPIO A is selected*/
-			valueIntr |= PORTA->ISFR;
+			intrValue |= PORTA->ISFR;
 			break;
 		case GPIO_B: /** GPIO B is selected*/
-			valueIntr |= PORTB->ISFR;
+			intrValue |= PORTB->ISFR;
 			break;
 		case GPIO_C: /** GPIO C is selected*/
-			valueIntr |= PORTC->ISFR;
+			intrValue |= PORTC->ISFR;
 			break;
 		case GPIO_D: /** GPIO D is selected*/
-			valueIntr |= PORTD->ISFR;
+			intrValue |= PORTD->ISFR;
 			break;
 		default: /** GPIO E is selected*/
-			valueIntr |= PORTE->ISFR;
+			intrValue |= PORTE->ISFR;
 			break;
 
 	}// end switch
 
-	return valueIntr;
+	return intrValue;
 
 }
 

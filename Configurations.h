@@ -72,7 +72,13 @@ typedef const struct State{
 	States_MenuType currentState;
 	uint32 out;
 	uint32 wait;
-
+	uint8 counterLines;
+	uint8 enableButton0 : 1;
+	uint8 enableButton1 : 1;
+	uint8 enableButton2 : 1;
+	uint8 enableButton3 : 1;
+	uint8 enableButton4 : 1;
+	uint8 enableButton5 : 1;
 	const struct State* next[2];
 }StateType;
 

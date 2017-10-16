@@ -6,8 +6,8 @@
  */
 
 #include "Buttons.h"
-#include "GPIO.h"
 
+static Button_PressedFlag Button_Pressed;
 
 static void Button_clock(Button_PortType port){
 	switch(port){
@@ -55,6 +55,93 @@ static void Button_enable(Button_PortType port, BitsType bit){
 	case PORT_E:
 		GPIO_pinControlRegister(GPIO_E,bit,&pinControlRegisterPort);
 		GPIO_dataDirectionPIN(GPIO_E,GPIO_INPUT,bit);
+		break;
+	default:
+		break;
+	}
+}
+
+void Button_statusFlag(GPIO_portNameType gpio, BitsType bit){
+	switch(gpio){
+	case GPIO_A:
+		if(BIT1 == bit){
+			Button_Pressed.flagButton4 = TRUE;
+		}
+		if(BIT2 == bit){
+			Button_Pressed.flagButton2 = TRUE;
+		}
+		break;
+	case GPIO_B:
+		if(BIT9 == bit){
+			Button_Pressed.flagButton5 = TRUE;
+		}
+		if(BIT23 == bit){
+			Button_Pressed.flagButton3 = TRUE;
+		}
+		break;
+	case GPIO_C:
+		if(BIT2 == bit){
+			Button_Pressed.flagButton1 = TRUE;
+		}
+		if(BIT3 == bit){
+			Button_Pressed.flagButton0 = TRUE;
+		}
+		break;
+	case GPIO_D:
+		break;
+	case GPIO_E:
+		break;
+	default:
+		break;
+	}
+}
+
+uint8 Button_getFlag(Button_Type button){
+
+	switch(button){
+	case BUTTON_0:
+		return (Button_Pressed.flagButton0);
+		break;
+	case BUTTON_1:
+		return (Button_Pressed.flagButton1);
+		break;
+	case BUTTON_2:
+		return (Button_Pressed.flagButton2);
+		break;
+	case BUTTON_3:
+		return (Button_Pressed.flagButton3);
+		break;
+	case BUTTON_4:
+		return (Button_Pressed.flagButton4);
+		break;
+	case BUTTON_5:
+		return (Button_Pressed.flagButton5);
+		break;
+	default:
+		return FALSE;
+		break;
+	}
+}
+
+void Button_clearFlag(Button_Type button){
+	switch(button){
+	case BUTTON_0:
+		Button_Pressed.flagButton0 = FALSE;
+		break;
+	case BUTTON_1:
+		Button_Pressed.flagButton1 = FALSE;
+		break;
+	case BUTTON_2:
+		Button_Pressed.flagButton2 = FALSE;
+		break;
+	case BUTTON_3:
+		Button_Pressed.flagButton3 = FALSE;
+		break;
+	case BUTTON_4:
+		Button_Pressed.flagButton4 = FALSE;
+		break;
+	case BUTTON_5:
+		Button_Pressed.flagButton5 = FALSE;
 		break;
 	default:
 		break;

@@ -34,23 +34,28 @@ int main(void) {
 
 	/**Set the reference priority **/
 	NVIC_setBASEPRI_threshold(PRIORITY_10);
+
 	/**Set the priority of PORT A **/
 	NVIC_enableInterruptAndPriotity(PORTA_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTD_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTE_IRQ, PRIORITY_4);
+
 	/**Enable all the interrupts **/
 	EnableInterrupts;
     while(1){
 
-		LCDNokia_clear();
- 		LCDNokia_gotoXY(25,0);
-		LCDNokia_sendString(string1);
-		delay(6500);
 
 		LCDNokia_clear();
-		LCDNokia_gotoXY(25,2);
+ 		LCDNokia_gotoXY(25,0);
+		LCDNokia_sendString((uint8*)(*Array_Strings[0]));
+		delay(6500);
+		(Array_Strings[0])++;
+
+
+		LCDNokia_clear();
+		LCDNokia_gotoXY(25,10);
 		LCDNokia_sendChar('1');
 		delay(6500);
 

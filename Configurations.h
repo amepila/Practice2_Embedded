@@ -42,7 +42,8 @@ const Button_ConfigType Buttons_Config[6] = {
 							{PORT_B,BIT9}
 };
 
-const SPI_ConfigType SPI_Config={SPI_DISABLE_FIFO,
+const SPI_ConfigType SPI_Config={
+							SPI_DISABLE_FIFO,
 							SPI_LOW_POLARITY,
 							SPI_LOW_PHASE,
 							SPI_MSB,
@@ -55,7 +56,8 @@ const SPI_ConfigType SPI_Config={SPI_DISABLE_FIFO,
 
 
 
-const ADC_ConfigType ADC_Config = {ADC_0,
+const ADC_ConfigType ADC_Config = {
+							ADC_0,
 							{ADC_CLK8,ADC_LONG,ADC_CONVER_8B,ADC_BUS_CLK},
 							ADC_HW_ENABLE,
 							ADC_SAMPLE32,
@@ -65,6 +67,14 @@ const ADC_ConfigType ADC_Config = {ADC_0,
 /***********************************************************************/
 /******************************STATE MACHINES***************************/
 /***********************************************************************/
+
+typedef const struct State{
+	States_MenuType currentState;
+	uint32 out;
+	uint32 wait;
+
+	const struct State* next[2];
+}StateType;
 
 
 

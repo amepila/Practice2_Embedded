@@ -49,7 +49,7 @@ void Button_statusFlag(GPIO_portNameType gpio, BitsType bit);
 
 uint8 Button_getFlag(Button_Type button);
 
-void Button_clearFlags(Button_Type button);
+void Button_clearFlag(Button_Type button);
 
 void Buttons_init(const Button_ConfigType*);
 

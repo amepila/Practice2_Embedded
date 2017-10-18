@@ -21,7 +21,6 @@
 
 int main(void) {
 
-	volatile uint32 resultADC;
 	States_MenuType currentState = DEFAULT;
 	fptrState functionMachine;
 	States_MenuType(*mainFunctions)(void);
@@ -55,8 +54,6 @@ int main(void) {
     while(1){
     	mainFunctions = StateProgram[currentState].stateFunction;
     	currentState = mainFunctions();
-
-		resultADC = ADC_calculateResult(&ADC_Config);
     }
     return 0;
 }

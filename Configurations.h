@@ -80,6 +80,8 @@ States_MenuType stateDefault(){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = DEFAULT;
+	volatile uint32 resultADC;
+
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 			LCDNokia_gotoXY(7,counterLinesLCD);
@@ -88,12 +90,14 @@ States_MenuType stateDefault(){
 	}
 
 
+	resultADC = ADC_calculateResult(&ADC_Config);
 
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 		state = MENU;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 
 
@@ -111,36 +115,42 @@ States_MenuType stateMenu(){
 		delay(2000);
 	}
 
-	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
+	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 		state = DEFAULT;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 		state = ALARM;
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 		state = FORMAT;
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 		state = INCREMENT;
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_4))){
 		state = MANUAL;
 		Button_clearFlag(BUTTON_4);
 		GPIO_clearIRQStatus(GPIO_A);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_5))){
 		state = FREQUENCY;
 		Button_clearFlag(BUTTON_5);
 		GPIO_clearIRQStatus(GPIO_B);
+		LCDNokia_clear();
 	}
 
 	return state;
@@ -152,6 +162,7 @@ States_MenuType stateAlarm(){
 	States_MenuType state = ALARM;
 
 
+
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 			LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings3[counterLinesLCD]));
@@ -159,29 +170,34 @@ States_MenuType stateAlarm(){
 	}
 
 
+
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
 		state = MENU;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
 
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 
 
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 
 
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);
+		LCDNokia_clear();
 	}
 
 	return state;
@@ -204,22 +220,25 @@ States_MenuType stateFormat(){
 		state = MENU;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
-
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);
+		LCDNokia_clear();
 	}
 
 	return state;
@@ -242,21 +261,25 @@ States_MenuType stateIncrement(){
 		state = MENU;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);
+		LCDNokia_clear();
 	}
 
 	return state;
@@ -279,31 +302,37 @@ States_MenuType stateManual(){
 		state = MENU;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_4))){
 
 		Button_clearFlag(BUTTON_4);
 		GPIO_clearIRQStatus(GPIO_A);
+		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_5))){
 
 		Button_clearFlag(BUTTON_5);
 		GPIO_clearIRQStatus(GPIO_B);
+		LCDNokia_clear();
 	}
 
 	return state;
@@ -322,11 +351,14 @@ States_MenuType stateFrequency(){
 	}
 
 
+
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
 		state = MENU;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
+		LCDNokia_clear();
+
 	}
 
 	return state;

@@ -83,8 +83,8 @@ void Blue(void){
 	delay(L);
 
 	/*Led Off*/
-	GPIO_setPIN(GPIO_B, BIT21);
-	delay(S);
+	//GPIO_setPIN(GPIO_B, BIT21);
+	//delay(S);
 }
 void Red(void){
 	/**Leds Off**/

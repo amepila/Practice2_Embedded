@@ -22,13 +22,19 @@
 int main(void) {
 
 	volatile uint32 resultADC;
-	//States_MenuType currentState = DEFAULT;
+	States_MenuType currentState = DEFAULT;
+	fptrState functionMachine;
+	States_MenuType(*mainFunctions)(void);
+
 
 	SPI_init(&SPI_Config);
 	LCDNokia_init();
 	LCDNokia_clear();
 	Buttons_init(Buttons_Config);
 	ADC_init(&ADC_Config);
+
+	/*DEBUG*/
+	setAllRGB();
 
 	/*********************************/
 	/***INTERRUPTIONS CONFIGURATION***/
@@ -47,10 +53,10 @@ int main(void) {
 	/**Enable all the interrupts **/
 	EnableInterrupts;
     while(1){
+    	mainFunctions = StateProgram[currentState].stateFunction;
+    	currentState = mainFunctions();
 
 		resultADC = ADC_calculateResult(&ADC_Config);
-
-		LCDNokia_clear();
     }
     return 0;
 }

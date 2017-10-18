@@ -13,6 +13,7 @@
 #include "GPIO.h"
 #include "DataTypeDefinitions.h"
 #include "Buttons.h"
+#include "Colors.h"
 
 
 static GPIO_interruptFlags_t GPIO_intrStatusFlag;
@@ -35,6 +36,7 @@ void PORTA_IRQHandler()
 {
 	GPIO_readInterrupt(GPIO_A);
 
+	delay(6500);
 	if((1<<BIT1) == GPIO_readInterrupt(GPIO_A)){
 		GPIO_intrStatusFlag.flagPortA  = TRUE;
 		Button_statusFlag(GPIO_A,BIT1);
@@ -75,6 +77,8 @@ void PORTC_IRQHandler()
 		GPIO_intrStatusFlag.flagPortC  = TRUE;
 		Button_statusFlag(GPIO_C,BIT3);
 	}
+	GPIO_intrStatusFlag.flagPortC  = TRUE;
+
 
 	GPIO_clearInterrupt(GPIO_C);
 }

@@ -21,8 +21,7 @@
 
 int main(void) {
 
-	States_MenuType currentState = DEFAULT;
-	fptrState functionMachine;
+  	States_MenuType currentState = DEFAULT;
 	States_MenuType(*mainFunctions)(void);
 
 

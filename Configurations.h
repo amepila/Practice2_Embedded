@@ -76,21 +76,72 @@ const ADC_ConfigType ADC_Config = {
 /*****************************MAIN FUNCTIONS****************************/
 /***********************************************************************/
 
+
 States_MenuType stateDefault(){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = DEFAULT;
 	volatile uint32 resultADC;
+	uint8 digit;
+	uint8 numberDigits = 0;
+	uint8 counter;
+	uint32 tmpADC;
+	const uint8 symbolGrades = 39;
+	const uint8 symbolPercen = 37;
+	uint8 realDigit[7];
 
-
-	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
-			LCDNokia_gotoXY(7,counterLinesLCD);
-		LCDNokia_sendString((uint8*)(Sub_ArrayStrings1[counterLinesLCD]));
-		delay(2000);
-	}
 
 
 	resultADC = ADC_calculateResult(&ADC_Config);
+	tmpADC = resultADC;
+
+
+	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
+
+		LCDNokia_gotoXY(7,counterLinesLCD);
+		LCDNokia_sendString((uint8*)(Sub_ArrayStrings1[counterLinesLCD]));
+
+		if(1 == counterLinesLCD){
+
+			while(tmpADC > 0){
+				digit = tmpADC % 10;
+				digit = '0' + digit;
+				realDigit[numberDigits] = digit;
+				tmpADC /= 10;
+				numberDigits++;
+			}
+
+			for(counter = numberDigits; counter != 0 ; counter--){
+				LCDNokia_sendChar(realDigit[counter-1]);
+			}
+			LCDNokia_sendChar(symbolPercen);
+
+			tmpADC = resultADC;
+
+			numberDigits = 0;
+		}
+		if(3 == counterLinesLCD){
+
+			while(tmpADC > 0){
+				digit = tmpADC % 10;
+				digit = '0' + digit;
+				realDigit[numberDigits] = digit;
+				tmpADC /= 10;
+				numberDigits++;
+			}
+
+			for(counter = numberDigits; counter != 0 ; counter--){
+				LCDNokia_sendChar(realDigit[counter-1]);
+			}
+			LCDNokia_sendChar(symbolGrades);
+
+			tmpADC = resultADC;
+
+			numberDigits = 0;
+		}
+
+		delay(2000);
+	}
 
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){

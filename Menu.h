@@ -26,7 +26,7 @@
 	uint8 MainMenu5[]="5)Frec";
 
 	uint8 AlarmMenu1[]="Alarma";
-	uint8 AlarmMenu2[]=" '";
+	uint8 AlarmMenu2[]=" ";
 	uint8 AlarmMenu3[]="(-)B1(+)B2";
 	uint8 AlarmMenu4[]="(OK)B3";
 

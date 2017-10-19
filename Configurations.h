@@ -68,8 +68,15 @@ const ADC_ConfigType ADC_Config = {
 							ADC_SAMPLE32,
 							ADC_INPUT_DADP0};
 
+
+/***********************************************************************/
+/******************************Global Variables*************************/
+/***********************************************************************/
 const uint8 SymbolGrades = 39;
 const uint8 SymbolPercen = 37;
+volatile uint32 ResultADC;
+uint32 VelocityMotor = 80;
+uint8 SetAlarm = 30;
 
 
 /***********************************************************************/
@@ -86,9 +93,9 @@ States_MenuType stateDefault(){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = DEFAULT;
-	volatile uint32 resultADC;
 
-	resultADC = ADC_calculateResult(&ADC_Config);
+	ResultADC = ADC_calculateResult(&ADC_Config);
+	Buzzer_setAlarm(ResultADC, SetAlarm);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 
@@ -97,13 +104,13 @@ States_MenuType stateDefault(){
 
 		if(1 == counterLinesLCD){
 
-			LCDNokia_printValue(resultADC);
+			LCDNokia_printValue(VelocityMotor);
 			LCDNokia_sendChar(SymbolPercen);
 		}
 		if(3 == counterLinesLCD){
 
-			LCDNokia_printValue(resultADC);
-			LCDNokia_sendChar(SymbolPercen);
+			LCDNokia_printValue(ResultADC);
+			LCDNokia_sendChar(SymbolGrades);
 		}
 		delay(2000);
 	}
@@ -123,8 +130,9 @@ States_MenuType stateMenu(){
 	States_MenuType state = MENU;
 
 	for(counterLinesLCD = 0; counterLinesLCD < 5; counterLinesLCD++){
-			LCDNokia_gotoXY(0,counterLinesLCD);
+		LCDNokia_gotoXY(0,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings2[counterLinesLCD]));
+
 		delay(2000);
 	}
 
@@ -171,16 +179,22 @@ States_MenuType stateAlarm(){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = ALARM;
+	static uint32 tmpConfig_Alarm;
+	static uint8 detectorInit = FALSE;
 
-
+	if(detectorInit == FALSE){tmpConfig_Alarm = SetAlarm;}
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
-			LCDNokia_gotoXY(7,counterLinesLCD);
+		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings3[counterLinesLCD]));
+
+		if(1 == counterLinesLCD){
+
+			LCDNokia_printValue(tmpConfig_Alarm);
+			LCDNokia_sendChar(SymbolGrades);
+		}
 		delay(2000);
 	}
-
-
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
@@ -191,6 +205,8 @@ States_MenuType stateAlarm(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
+		tmpConfig_Alarm--;
+		detectorInit = TRUE;
 
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
@@ -198,6 +214,8 @@ States_MenuType stateAlarm(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 
+		tmpConfig_Alarm++;
+		detectorInit = TRUE;
 
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
@@ -205,6 +223,7 @@ States_MenuType stateAlarm(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 
+		SetAlarm = tmpConfig_Alarm;
 
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);

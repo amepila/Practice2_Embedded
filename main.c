@@ -19,11 +19,11 @@
 #include "Configurations.h"
 
 
+
 int main(void) {
 
   	States_MenuType currentState = DEFAULT;
 	States_MenuType(*mainFunctions)(void);
-
 
 	SPI_init(&SPI_Config);
 	LCDNokia_init();

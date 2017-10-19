@@ -157,3 +157,12 @@ void Buttons_init(const Button_ConfigType* Button_Config){
 	}
 
 }
+
+void Buzzer_setAlarm(uint32 currentValue, uint32 limitConf){
+	if(limitConf == currentValue){
+		GPIO_clearPIN(GPIO_A,BIT0);
+	}else{
+		GPIO_setPIN(GPIO_A,BIT0);
+	}
+}
+

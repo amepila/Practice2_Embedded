@@ -53,5 +53,7 @@ void Button_clearFlag(Button_Type button);
 
 void Buttons_init(const Button_ConfigType*);
 
+void Buzzer_setAlarm(uint32 currentValue, uint32 limitConf);
+
 
 #endif /* BUTTONS_H_ */

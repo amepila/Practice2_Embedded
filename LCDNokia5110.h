@@ -18,6 +18,15 @@
 #define LCD_CMD 0
 #define DATA_OR_CMD_PIN 3
 #define RESET_PIN 0
+
+typedef struct{
+	uint8 numberDigits;
+	uint8 realDigit[7];
+}formatASCII;
+
+
+
+
 /*It configures the LCD*/
 void LCDNokia_init(void);
 /*It writes a byte in the LCD memory. The place of writting is the last place that was indicated by LCDNokia_gotoXY. In the reset state
@@ -36,6 +45,10 @@ void LCDNokia_sendChar(uint8);
 void LCDNokia_sendString(uint8*);
 /*It used in the initialisation routine*/
 void LCD_delay(void);
+
+
+void LCDNokia_printValue(uint32 value);
+
 
 
 

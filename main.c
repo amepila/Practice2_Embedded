@@ -45,8 +45,6 @@ int main(void) {
 	NVIC_enableInterruptAndPriotity(PORTA_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_4);
-	NVIC_enableInterruptAndPriotity(PORTD_IRQ, PRIORITY_4);
-	NVIC_enableInterruptAndPriotity(PORTE_IRQ, PRIORITY_4);
 
 	/**Enable all the interrupts **/
 	EnableInterrupts;

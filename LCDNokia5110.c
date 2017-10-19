@@ -197,3 +197,22 @@ void LCD_delay(void)
 	}
 }
 
+void LCDNokia_printValue(uint32 value){
+
+	formatASCII real_Value;
+	uint8 temp_digit;
+	uint8 counter;
+	real_Value.numberDigits = 0;
+
+	while(value > 0){
+		temp_digit = value % 10;
+		temp_digit = '0' + temp_digit;
+		real_Value.realDigit[real_Value.numberDigits] = temp_digit;
+		value /= 10;
+		real_Value.numberDigits++;
+	}
+
+	for(counter = real_Value.numberDigits; counter != 0 ; counter--){
+		LCDNokia_sendChar(real_Value.realDigit[counter-1]);
+	}
+}

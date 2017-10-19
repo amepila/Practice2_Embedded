@@ -34,7 +34,6 @@ typedef States_MenuType(*fptrState)(void);
 
 
 
-
 /***********************************************************************/
 /******************************SET OF CONFIGURATIONS********************/
 /***********************************************************************/
@@ -69,7 +68,13 @@ const ADC_ConfigType ADC_Config = {
 							ADC_SAMPLE32,
 							ADC_INPUT_DADP0};
 
+const uint8 SymbolGrades = 39;
+const uint8 SymbolPercen = 37;
 
+
+/***********************************************************************/
+/******************************SUB FUNCTIONS****************************/
+/***********************************************************************/
 
 
 /***********************************************************************/
@@ -82,19 +87,8 @@ States_MenuType stateDefault(){
 	uint8 counterLinesLCD;
 	States_MenuType state = DEFAULT;
 	volatile uint32 resultADC;
-	uint8 digit;
-	uint8 numberDigits = 0;
-	uint8 counter;
-	uint32 tmpADC;
-	const uint8 symbolGrades = 39;
-	const uint8 symbolPercen = 37;
-	uint8 realDigit[7];
-
-
 
 	resultADC = ADC_calculateResult(&ADC_Config);
-	tmpADC = resultADC;
-
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 
@@ -103,46 +97,16 @@ States_MenuType stateDefault(){
 
 		if(1 == counterLinesLCD){
 
-			while(tmpADC > 0){
-				digit = tmpADC % 10;
-				digit = '0' + digit;
-				realDigit[numberDigits] = digit;
-				tmpADC /= 10;
-				numberDigits++;
-			}
-
-			for(counter = numberDigits; counter != 0 ; counter--){
-				LCDNokia_sendChar(realDigit[counter-1]);
-			}
-			LCDNokia_sendChar(symbolPercen);
-
-			tmpADC = resultADC;
-
-			numberDigits = 0;
+			LCDNokia_printValue(resultADC);
+			LCDNokia_sendChar(SymbolPercen);
 		}
 		if(3 == counterLinesLCD){
 
-			while(tmpADC > 0){
-				digit = tmpADC % 10;
-				digit = '0' + digit;
-				realDigit[numberDigits] = digit;
-				tmpADC /= 10;
-				numberDigits++;
-			}
-
-			for(counter = numberDigits; counter != 0 ; counter--){
-				LCDNokia_sendChar(realDigit[counter-1]);
-			}
-			LCDNokia_sendChar(symbolGrades);
-
-			tmpADC = resultADC;
-
-			numberDigits = 0;
+			LCDNokia_printValue(resultADC);
+			LCDNokia_sendChar(SymbolPercen);
 		}
-
 		delay(2000);
 	}
-
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 		state = MENU;
@@ -150,8 +114,6 @@ States_MenuType stateDefault(){
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
 	}
-
-
 	return state;
 }
 
@@ -165,7 +127,6 @@ States_MenuType stateMenu(){
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings2[counterLinesLCD]));
 		delay(2000);
 	}
-
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 		state = DEFAULT;
@@ -203,7 +164,6 @@ States_MenuType stateMenu(){
 		GPIO_clearIRQStatus(GPIO_B);
 		LCDNokia_clear();
 	}
-
 	return state;
 }
 
@@ -224,7 +184,7 @@ States_MenuType stateAlarm(){
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
-		state = MENU;
+		state = DEFAULT;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
@@ -268,7 +228,7 @@ States_MenuType stateFormat(){
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
-		state = MENU;
+		state = DEFAULT;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
@@ -309,7 +269,7 @@ States_MenuType stateIncrement(){
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
-		state = MENU;
+		state = DEFAULT;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
@@ -350,7 +310,7 @@ States_MenuType stateManual(){
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
-		state = MENU;
+		state = DEFAULT;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
@@ -405,7 +365,7 @@ States_MenuType stateFrequency(){
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
-		state = MENU;
+		state = DEFAULT;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();

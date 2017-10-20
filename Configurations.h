@@ -120,6 +120,7 @@ States_MenuType stateDefault(){
 
 			LCDNokia_printValue(ResultADC);
 			LCDNokia_sendChar(SymbolGrades);
+			LCDNokia_sendChar(wordC);
 		}
 		if((3 == counterLinesLCD) && (TRUE == FlagFormat)){
 
@@ -321,27 +322,24 @@ States_MenuType stateIncrement(){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = INCREMENT;
-	static detectorInit = FALSE;
-	static tmpDetector = FALSE;
+	static uint32 tmpConfig_Increment;
+	static uint8 detectorInit = FALSE;
+
+	if(detectorInit == FALSE){tmpConfig_Increment = SetIncrement;}
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings5[counterLinesLCD]));
 
 		if(1 == counterLinesLCD){
+
 			LCDNokia_gotoXY(32,counterLinesLCD);
-
-			if(FALSE == detectorInit){
-				LCDNokia_printValue(SetIncrement);
-			}
-			if(TRUE == detectorInit){
-
-			}
+			LCDNokia_printValue(tmpConfig_Increment);
 			LCDNokia_sendChar(SymbolPercen);
+
 		}
 		delay(2000);
 	}
-
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
@@ -352,17 +350,30 @@ States_MenuType stateIncrement(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
+		if(tmpConfig_Increment > 5){
+			tmpConfig_Increment -= 5;
+			detectorInit = TRUE;
+		}
+
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 
+		if(tmpConfig_Increment < 100){
+			tmpConfig_Increment += 5;
+			detectorInit = TRUE;
+		}
+
+
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
 		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
+
+		SetIncrement = tmpConfig_Increment;
 
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);

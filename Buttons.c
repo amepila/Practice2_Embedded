@@ -158,11 +158,19 @@ void Buttons_init(const Button_ConfigType* Button_Config){
 
 }
 
-void Buzzer_setAlarm(uint32 currentValue, uint32 limitConf){
-	if(limitConf == currentValue){
+void Buzzer_setAlarm(uint32 current_Value, uint32 limit_Conf){
+	if(limit_Conf == current_Value){
 		GPIO_clearPIN(GPIO_A,BIT0);
 	}else{
 		GPIO_setPIN(GPIO_A,BIT0);
 	}
+}
+
+float Conversion_Fahrenheit(uint32 celsius_Temp){
+
+	float fahrenheit_Temp;
+
+	fahrenheit_Temp = ((celsius_Temp*9)/5) + 32;
+	return (fahrenheit_Temp);
 }
 

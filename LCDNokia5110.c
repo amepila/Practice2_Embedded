@@ -216,3 +216,19 @@ void LCDNokia_printValue(uint32 value){
 		LCDNokia_sendChar(real_Value.realDigit[counter-1]);
 	}
 }
+
+void LCDNokia_printFloatValue(float value){
+	const uint8 wordPoint = 46;
+	float tmp_Float;
+	uint8 part_Float;
+	uint8 part_Int;
+
+	tmp_Float = (uint8)value - value;
+	tmp_Float *= 100;
+	part_Float = (uint8)tmp_Float;
+	part_Int = (uint8)value;
+
+	LCDNokia_printValue(part_Int);
+	LCDNokia_sendChar(wordPoint);
+	LCDNokia_printValue(part_Float);
+}

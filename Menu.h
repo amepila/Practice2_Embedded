@@ -31,7 +31,7 @@
 	uint8 AlarmMenu4[]="(OK)B3";
 
 	uint8 FormatMenu1[]="Format tmp";
-	uint8 FormatMenu2[]="Temp = 'C";
+	uint8 FormatMenu2[]="Temp= ";
 	uint8 FormatMenu3[]="(C)B1(F)B2";
 	uint8 FormatMenu4[]="(OK)B3";
 

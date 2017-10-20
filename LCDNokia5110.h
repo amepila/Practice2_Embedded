@@ -48,6 +48,8 @@ void LCD_delay(void);
 
 
 void LCDNokia_printValue(uint32 value);
+void LCDNokia_printFloatValue(float value);
+
 
 
 

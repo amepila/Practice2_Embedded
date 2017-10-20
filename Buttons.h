@@ -55,5 +55,6 @@ void Buttons_init(const Button_ConfigType*);
 
 void Buzzer_setAlarm(uint32 currentValue, uint32 limitConf);
 
+float Conversion_Fahrenheit(uint32 celsius_Temp);
 
 #endif /* BUTTONS_H_ */

@@ -76,10 +76,14 @@ const uint8 SymbolGrades = 39;
 const uint8 SymbolPercen = 37;
 const uint8 wordC = 67;
 const uint8 wordF = 70;
+
 volatile uint32 ResultADC;
-uint8 flagFormat = FALSE;
-uint32 VelocityMotor = 80;
+volatile uint32 VelocityMotor = 80;
+
+uint8 SetIncrement = 15;
+uint8 FlagFormat = FALSE;
 uint8 SetAlarm = 30;
+
 
 
 /***********************************************************************/
@@ -95,8 +99,8 @@ uint8 SetAlarm = 30;
 States_MenuType stateDefault(){
 
 	uint8 counterLinesLCD;
-	States_MenuType state = DEFAULT;
 	float resultFah;
+	States_MenuType state = DEFAULT;
 
 	ResultADC = ADC_calculateResult(&ADC_Config);
 	Buzzer_setAlarm(ResultADC, SetAlarm);
@@ -112,12 +116,12 @@ States_MenuType stateDefault(){
 			LCDNokia_printValue(VelocityMotor);
 			LCDNokia_sendChar(SymbolPercen);
 		}
-		if((3 == counterLinesLCD) && (FALSE == flagFormat)){
+		if((3 == counterLinesLCD) && (FALSE == FlagFormat)){
 
 			LCDNokia_printValue(ResultADC);
 			LCDNokia_sendChar(SymbolGrades);
 		}
-		if((3 == counterLinesLCD) && (TRUE == flagFormat)){
+		if((3 == counterLinesLCD) && (TRUE == FlagFormat)){
 
 			LCDNokia_printFloatValue(resultFah);
 			LCDNokia_sendChar(SymbolGrades);
@@ -247,10 +251,10 @@ States_MenuType stateAlarm(){
 States_MenuType stateFormat(){
 
 	uint8 counterLinesLCD;
+	float tempFah;
 	States_MenuType state = FORMAT;
 	static uint8 detectorInit = FALSE;
-	float tempFah;
-	static uint8 tmpDetector;
+	static uint8 tmpDetector = FALSE;
 
 	ResultADC = ADC_calculateResult(&ADC_Config);
 	tempFah = Conversion_Fahrenheit(ResultADC);
@@ -304,13 +308,12 @@ States_MenuType stateFormat(){
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 
 		detectorInit = tmpDetector;
-		flagFormat = TRUE;
+		FlagFormat = tmpDetector;
 
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);
 		LCDNokia_clear();
 	}
-
 	return state;
 }
 
@@ -318,10 +321,24 @@ States_MenuType stateIncrement(){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = INCREMENT;
+	static detectorInit = FALSE;
+	static tmpDetector = FALSE;
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
-			LCDNokia_gotoXY(7,counterLinesLCD);
+		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings5[counterLinesLCD]));
+
+		if(1 == counterLinesLCD){
+			LCDNokia_gotoXY(32,counterLinesLCD);
+
+			if(FALSE == detectorInit){
+				LCDNokia_printValue(SetIncrement);
+			}
+			if(TRUE == detectorInit){
+
+			}
+			LCDNokia_sendChar(SymbolPercen);
+		}
 		delay(2000);
 	}
 

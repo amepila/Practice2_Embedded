@@ -223,7 +223,7 @@ void LCDNokia_printFloatValue(float value){
 	uint8 part_Float;
 	uint8 part_Int;
 
-	tmp_Float = (uint8)value - value;
+	tmp_Float = value - (uint8)value;
 	tmp_Float *= 100;
 	part_Float = (uint8)tmp_Float;
 	part_Int = (uint8)value;

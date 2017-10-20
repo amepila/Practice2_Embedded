@@ -170,7 +170,7 @@ float Conversion_Fahrenheit(uint32 celsius_Temp){
 
 	float fahrenheit_Temp;
 
-	fahrenheit_Temp = ((celsius_Temp*9)/5) + 32;
+	fahrenheit_Temp = ((float)(celsius_Temp*9)/5) + 32;
 	return (fahrenheit_Temp);
 }
 

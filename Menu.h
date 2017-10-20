@@ -36,7 +36,7 @@
 	uint8 FormatMenu4[]="(OK)B3";
 
 	uint8 IncMenu1[]="% de Inc";
-	uint8 IncMenu2[]=" %";
+	uint8 IncMenu2[]=" ";
 	uint8 IncMenu3[]="(-)B1";
 	uint8 IncMenu4[]="(+)B2(OK)B3";
 

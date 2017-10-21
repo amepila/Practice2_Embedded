@@ -174,3 +174,68 @@ float Conversion_Fahrenheit(uint32 celsius_Temp){
 	return (fahrenheit_Temp);
 }
 
+uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual){
+
+	const uint32 first_Temp = 20;
+	const uint32 first_Vel = 80;
+	const uint32 limit_Vel = 85;
+
+	static uint32 default_Temp = 20;
+	static uint32 default_Vel = 80;
+	float velocity_Scale;
+	uint32 diff_Temp;
+	sint32 velocity;
+	uint32 constant_Increment;
+	uint32 mod_Temp;
+
+	mod_Temp =  temperature % 2;
+
+	if(mod_Temp == 1){temperature -= 1;}
+
+	if((temperature > (default_Temp + 1)) && (FALSE == modeManual)){
+
+		if(temperature < first_Temp){
+			diff_Temp = first_Temp - temperature;
+		}else{
+			diff_Temp = temperature - first_Temp;
+		}
+
+		constant_Increment = diff_Temp / 2;
+
+		velocity = (first_Vel)-(constant_Increment*increment);
+
+		if(velocity <= 0){
+			velocity = 0;
+		}
+	}
+	if((temperature < (default_Temp - 1)) && (FALSE == modeManual)){
+
+		if(temperature < first_Temp){
+			diff_Temp = first_Temp - temperature;
+		}else{
+			diff_Temp = temperature - first_Temp;
+		}
+		constant_Increment = diff_Temp / 2;
+
+		velocity = (first_Vel)+(constant_Increment*increment);
+
+		if(velocity >= limit_Vel){
+			velocity = limit_Vel;
+		}
+	}
+	if((temperature >= (default_Temp - 1)) && (temperature <= (default_Temp + 1))){
+		if(FALSE == modeManual){
+			velocity = default_Vel;
+		}
+	}
+
+	if(TRUE == modeManual){
+
+	}
+
+	default_Vel = velocity;
+	default_Temp = temperature;
+
+	return velocity;
+}
+

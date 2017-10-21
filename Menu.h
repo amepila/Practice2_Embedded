@@ -41,7 +41,7 @@
 	uint8 IncMenu4[]="(+)B2(OK)B3";
 
 	uint8 ManualMenu1[]="Ctrl Manual";
-	uint8 ManualMenu2[]=" %";
+	uint8 ManualMenu2[]=" ";
 	uint8 ManualMenu3[]="(ON)B1";
 	uint8 ManualMenu4[]="(OFF)B2";
 	uint8 ManualMenu5[]="(OK)B3";

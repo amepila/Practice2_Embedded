@@ -219,16 +219,38 @@ void LCDNokia_printValue(uint32 value){
 
 void LCDNokia_printFloatValue(float value){
 	const uint8 wordPoint = 46;
+	const uint8 numZero = 48;
 	float tmp_Float;
 	uint8 part_Float;
 	uint8 part_Int;
+
 
 	tmp_Float = value - (uint8)value;
 	tmp_Float *= 100;
 	part_Float = (uint8)tmp_Float;
 	part_Int = (uint8)value;
 
-	LCDNokia_printValue(part_Int);
-	LCDNokia_sendChar(wordPoint);
-	LCDNokia_printValue(part_Float);
+
+	if(part_Float < 10){
+
+		LCDNokia_printValue(part_Int);
+		LCDNokia_sendChar(wordPoint);
+
+		LCDNokia_sendChar(numZero);
+		LCDNokia_printValue(part_Float);
+	}
+	if(part_Float == 0){
+
+		LCDNokia_printValue(part_Int);
+		LCDNokia_sendChar(wordPoint);
+
+		LCDNokia_sendChar(numZero);
+		LCDNokia_sendChar(numZero);
+	}
+	if(part_Float >= 10){
+
+		LCDNokia_printValue(part_Int);
+		LCDNokia_sendChar(wordPoint);
+		LCDNokia_printValue(part_Float);
+	}
 }

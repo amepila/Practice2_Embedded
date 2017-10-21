@@ -78,11 +78,12 @@ const uint8 wordC = 67;
 const uint8 wordF = 70;
 
 volatile uint32 ResultADC;
-volatile uint32 VelocityMotor = 80;
+uint32 VelocityMotor = 80;
 
 uint8 SetIncrement = 15;
 uint8 FlagFormat = FALSE;
 uint8 SetAlarm = 30;
+uint8 ModeManual = FALSE;
 
 
 
@@ -105,6 +106,8 @@ States_MenuType stateDefault(){
 	ResultADC = ADC_calculateResult(&ADC_Config);
 	Buzzer_setAlarm(ResultADC, SetAlarm);
 	resultFah = Conversion_Fahrenheit(ResultADC);
+
+	//VelocityMotor = Control_Velocity(ResultADC, SetIncrement, ModeManual);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 
@@ -275,6 +278,7 @@ States_MenuType stateFormat(){
 			if(TRUE == detectorInit){
 
 				LCDNokia_printFloatValue(tempFah);
+				LCDNokia_gotoXY(70,counterLinesLCD);
 				LCDNokia_sendChar(SymbolGrades);
 				LCDNokia_sendChar(wordF);
 			}
@@ -387,10 +391,18 @@ States_MenuType stateManual(){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = MANUAL;
+	uint32 tmpVelocity;
+	static uint8 tmpMode_Manual;
 
 	for(counterLinesLCD = 0; counterLinesLCD < 6; counterLinesLCD++){
-			LCDNokia_gotoXY(7,counterLinesLCD);
+		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings6[counterLinesLCD]));
+
+		if(1 == counterLinesLCD){
+			LCDNokia_gotoXY(32,counterLinesLCD);
+			LCDNokia_printValue(VelocityMotor);
+			LCDNokia_sendChar(SymbolPercen);
+		}
 		delay(2000);
 	}
 
@@ -404,11 +416,15 @@ States_MenuType stateManual(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
+		tmpMode_Manual = FALSE;
+
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
+
+		tmpMode_Manual = TRUE;
 
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
@@ -416,11 +432,19 @@ States_MenuType stateManual(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_3))){
 
+		ModeManual = tmpMode_Manual;
+
 		Button_clearFlag(BUTTON_3);
 		GPIO_clearIRQStatus(GPIO_B);
 		LCDNokia_clear();
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_4))){
+
+		if((TRUE == ModeManual) && (VelocityMotor > 5)){
+
+			//VelocityMotor -= SetIncrement;
+		}
+
 
 		Button_clearFlag(BUTTON_4);
 		GPIO_clearIRQStatus(GPIO_A);
@@ -428,13 +452,17 @@ States_MenuType stateManual(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_5))){
 
+		if((TRUE == ModeManual) && (VelocityMotor < 100)){
+
+			//VelocityMotor += SetIncrement;
+		}
+
+
 		Button_clearFlag(BUTTON_5);
 		GPIO_clearIRQStatus(GPIO_B);
 		LCDNokia_clear();
 	}
-
 	return state;
-
 }
 
 States_MenuType stateFrequency(){
@@ -443,7 +471,7 @@ States_MenuType stateFrequency(){
 	States_MenuType state = FREQUENCY;
 
 	for(counterLinesLCD = 0; counterLinesLCD < 3; counterLinesLCD++){
-			LCDNokia_gotoXY(7,counterLinesLCD);
+		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings7[counterLinesLCD]));
 		delay(2000);
 	}
@@ -496,11 +524,5 @@ const StateType StateProgram[7] =
 		{stateManual},
 		{stateFrequency}
 };
-
-
-
-
-
-
 
 #endif /* CONFIGURATIONS_H_ */

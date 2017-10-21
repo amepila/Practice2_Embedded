@@ -18,8 +18,6 @@
 #include "Menu.h"
 #include "Configurations.h"
 
-
-
 int main(void) {
 
   	States_MenuType currentState = DEFAULT;

@@ -60,13 +60,40 @@ const SPI_ConfigType SPI_Config={
 							{GPIO_D,BIT1,BIT2}};
 
 
-
 const ADC_ConfigType ADC_Config = {
 							ADC_0,
 							{ADC_CLK8,ADC_LONG,ADC_CONVER_8B,ADC_BUS_CLK},
 							ADC_HW_ENABLE,
 							ADC_SAMPLE32,
 							ADC_INPUT_DADP0};
+
+
+const FTM_Config outputconfig = {
+							DISABLE_WRITEPROTECTION,
+							SYSTEMCLOCK,
+							DISABLE_FTM,
+							PS_4,
+							ENABLE_TOIF,
+							ENABLE_MSB,
+							DISABLE_MSA,
+							DISABLE_ELSB,
+							ENABLE_ELSA,
+							FTM_0,
+							FTMnC0};
+
+
+const FTM_Config inputConfig = {
+							DISABLE_WRITEPROTECTION,
+							SYSTEMCLOCK,
+							DISABLE_FTM,
+							PS_1,
+							ENABLE_TOIF,
+							DISABLE_MSA,
+							DISABLE_MSB,
+							DISABLE_ELSB,
+							ENABLE_ELSA,
+							FTM_2,
+							FTMnC0};
 
 
 /***********************************************************************/
@@ -106,7 +133,6 @@ States_MenuType stateDefault(){
 	ResultADC = ADC_calculateResult(&ADC_Config);
 	Buzzer_setAlarm(ResultADC, SetAlarm);
 	resultFah = Conversion_Fahrenheit(ResultADC);
-
 	VelocityMotor = Control_Velocity(ResultADC, SetIncrement, ModeManual);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
@@ -393,6 +419,7 @@ States_MenuType stateManual(){
 	States_MenuType state = MANUAL;
 	uint32 tmpVelocity;
 	static uint8 tmpMode_Manual;
+	uint8 modeIncrement;
 
 	for(counterLinesLCD = 0; counterLinesLCD < 6; counterLinesLCD++){
 		LCDNokia_gotoXY(7,counterLinesLCD);
@@ -409,6 +436,7 @@ States_MenuType stateManual(){
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
 
+		ModeManual = FALSE;
 		state = DEFAULT;
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
@@ -416,7 +444,7 @@ States_MenuType stateManual(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_1))){
 
-		tmpMode_Manual = FALSE;
+		tmpMode_Manual = TRUE;
 
 		Button_clearFlag(BUTTON_1);
 		GPIO_clearIRQStatus(GPIO_C);
@@ -424,7 +452,7 @@ States_MenuType stateManual(){
 	}
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_2))){
 
-		tmpMode_Manual = TRUE;
+		tmpMode_Manual = FALSE;
 
 		Button_clearFlag(BUTTON_2);
 		GPIO_clearIRQStatus(GPIO_A);
@@ -441,10 +469,9 @@ States_MenuType stateManual(){
 	if((TRUE == GPIO_getIRQStatus(GPIO_A)) && (TRUE == Button_getFlag(BUTTON_4))){
 
 		if((TRUE == ModeManual) && (VelocityMotor > 5)){
-
-			//VelocityMotor -= SetIncrement;
+			modeIncrement = FALSE;
+			VelocityMotor = Control_ManualVelocity(VelocityMotor, SetIncrement, modeIncrement);
 		}
-
 
 		Button_clearFlag(BUTTON_4);
 		GPIO_clearIRQStatus(GPIO_A);
@@ -453,8 +480,8 @@ States_MenuType stateManual(){
 	if((TRUE == GPIO_getIRQStatus(GPIO_B)) && (TRUE == Button_getFlag(BUTTON_5))){
 
 		if((TRUE == ModeManual) && (VelocityMotor < 100)){
-
-			//VelocityMotor += SetIncrement;
+			modeIncrement = TRUE;
+			VelocityMotor = Control_ManualVelocity(VelocityMotor, SetIncrement, modeIncrement);
 		}
 
 

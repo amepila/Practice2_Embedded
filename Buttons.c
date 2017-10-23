@@ -232,13 +232,29 @@ uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual){
 		}
 	}
 
-	if(TRUE == modeManual){
-
-	}
-
 	default_Temp = temperature;
 	default_Vel = velocity;
 
-	return velocity;
+	return (velocity);
 }
 
+uint32 Control_ManualVelocity(uint32 velocity, uint8 increment, uint8 modeIncrement){
+
+	const uint32 limit_Max = 85;
+	const uint32 limit_Min = 0;
+
+	static uint32 default_Velocity;
+
+	default_Velocity = velocity;
+
+	if(TRUE == modeIncrement){
+		default_Velocity = default_Velocity + increment;
+	}else{
+		default_Velocity = default_Velocity - increment;
+	}
+
+	if(default_Velocity < limit_Min){default_Velocity = limit_Min;}
+	if(default_Velocity > limit_Max){default_Velocity = limit_Max;}
+
+	return (default_Velocity);
+}

@@ -247,10 +247,11 @@ uint32 Control_ManualVelocity(uint32 velocity, uint8 increment, uint8 modeIncrem
 
 	default_Velocity = velocity;
 
+	if(FALSE == modeIncrement){
+		default_Velocity -= increment;
+	}
 	if(TRUE == modeIncrement){
-		default_Velocity = default_Velocity + increment;
-	}else{
-		default_Velocity = default_Velocity - increment;
+		default_Velocity += increment;
 	}
 
 	if(default_Velocity < limit_Min){default_Velocity = limit_Min;}

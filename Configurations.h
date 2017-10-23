@@ -107,7 +107,7 @@ States_MenuType stateDefault(){
 	Buzzer_setAlarm(ResultADC, SetAlarm);
 	resultFah = Conversion_Fahrenheit(ResultADC);
 
-	//VelocityMotor = Control_Velocity(ResultADC, SetIncrement, ModeManual);
+	VelocityMotor = Control_Velocity(ResultADC, SetIncrement, ModeManual);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 

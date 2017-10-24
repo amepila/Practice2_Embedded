@@ -16,6 +16,7 @@
 #include "GPIO.h"
 #include "Menu.h"
 #include "Colors.h"
+#include "FlexTimer.h"
 
 
 typedef enum{
@@ -29,9 +30,7 @@ typedef enum{
 	PASSWORD
 }States_MenuType;
 
-typedef States_MenuType(*fptrState)(void);
-
-
+typedef States_MenuType(*fptrState)(uint32);
 
 
 /***********************************************************************/
@@ -79,8 +78,9 @@ const FTM_Config outputconfig = {
 							DISABLE_ELSB,
 							ENABLE_ELSA,
 							FTM_0,
-							FTMnC0};
-
+							FTMnC0,
+							ChInterrupt_Disable
+};
 
 const FTM_Config inputConfig = {
 							DISABLE_WRITEPROTECTION,
@@ -90,10 +90,12 @@ const FTM_Config inputConfig = {
 							ENABLE_TOIF,
 							DISABLE_MSA,
 							DISABLE_MSB,
-							DISABLE_ELSB,
-							ENABLE_ELSA,
+							ENABLE_ELSB,
+							DISABLE_ELSA,
 							FTM_2,
-							FTMnC0};
+							FTMnC0,
+							ChInterrupt_Enable
+};
 
 
 /***********************************************************************/
@@ -104,7 +106,6 @@ const uint8 SymbolPercen = 37;
 const uint8 wordC = 67;
 const uint8 wordF = 70;
 
-volatile uint32 ResultADC;
 uint32 VelocityMotor = 80;
 
 uint8 SetIncrement = 15;
@@ -124,16 +125,15 @@ uint8 ModeManual = FALSE;
 /***********************************************************************/
 
 
-States_MenuType stateDefault(){
+States_MenuType stateDefault(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	float resultFah;
 	States_MenuType state = DEFAULT;
 
-	ResultADC = ADC_calculateResult(&ADC_Config);
-	Buzzer_setAlarm(ResultADC, SetAlarm);
-	resultFah = Conversion_Fahrenheit(ResultADC);
-	VelocityMotor = Control_Velocity(ResultADC, SetIncrement, ModeManual);
+	Buzzer_setAlarm(resultADC, SetAlarm);
+	resultFah = Conversion_Fahrenheit(resultADC);
+	VelocityMotor = Control_Velocity(resultADC, SetIncrement, ModeManual);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 
@@ -147,7 +147,7 @@ States_MenuType stateDefault(){
 		}
 		if((3 == counterLinesLCD) && (FALSE == FlagFormat)){
 
-			LCDNokia_printValue(ResultADC);
+			LCDNokia_printValue(resultADC);
 			LCDNokia_sendChar(SymbolGrades);
 			LCDNokia_sendChar(wordC);
 		}
@@ -157,6 +157,7 @@ States_MenuType stateDefault(){
 			LCDNokia_sendChar(SymbolGrades);
 			LCDNokia_sendChar(wordF);
 		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -169,7 +170,7 @@ States_MenuType stateDefault(){
 	return state;
 }
 
-States_MenuType stateMenu(){
+States_MenuType stateMenu(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = MENU;
@@ -178,6 +179,7 @@ States_MenuType stateMenu(){
 		LCDNokia_gotoXY(0,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings2[counterLinesLCD]));
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -220,7 +222,7 @@ States_MenuType stateMenu(){
 	return state;
 }
 
-States_MenuType stateAlarm(){
+States_MenuType stateAlarm(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = ALARM;
@@ -238,6 +240,7 @@ States_MenuType stateAlarm(){
 			LCDNokia_printValue(tmpConfig_Alarm);
 			LCDNokia_sendChar(SymbolGrades);
 		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -278,7 +281,7 @@ States_MenuType stateAlarm(){
 	return state;
 }
 
-States_MenuType stateFormat(){
+States_MenuType stateFormat(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	float tempFah;
@@ -286,8 +289,7 @@ States_MenuType stateFormat(){
 	static uint8 detectorInit = FALSE;
 	static uint8 tmpDetector = FALSE;
 
-	ResultADC = ADC_calculateResult(&ADC_Config);
-	tempFah = Conversion_Fahrenheit(ResultADC);
+	tempFah = Conversion_Fahrenheit(resultADC);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 		LCDNokia_gotoXY(0,counterLinesLCD);
@@ -297,7 +299,7 @@ States_MenuType stateFormat(){
 			LCDNokia_gotoXY(35,counterLinesLCD);
 
 			if(FALSE == detectorInit){
-				LCDNokia_printValue(ResultADC);
+				LCDNokia_printValue(resultADC);
 				LCDNokia_sendChar(SymbolGrades);
 				LCDNokia_sendChar(wordC);
 			}
@@ -309,6 +311,7 @@ States_MenuType stateFormat(){
 				LCDNokia_sendChar(wordF);
 			}
 		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -348,7 +351,7 @@ States_MenuType stateFormat(){
 	return state;
 }
 
-States_MenuType stateIncrement(){
+States_MenuType stateIncrement(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = INCREMENT;
@@ -368,6 +371,7 @@ States_MenuType stateIncrement(){
 			LCDNokia_sendChar(SymbolPercen);
 
 		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -413,11 +417,10 @@ States_MenuType stateIncrement(){
 	return state;
 }
 
-States_MenuType stateManual(){
+States_MenuType stateManual(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = MANUAL;
-	uint32 tmpVelocity;
 	static uint8 tmpMode_Manual;
 	uint8 modeIncrement;
 
@@ -430,6 +433,7 @@ States_MenuType stateManual(){
 			LCDNokia_printValue(VelocityMotor);
 			LCDNokia_sendChar(SymbolPercen);
 		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -492,7 +496,7 @@ States_MenuType stateManual(){
 	return state;
 }
 
-States_MenuType stateFrequency(){
+States_MenuType stateFrequency(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = FREQUENCY;
@@ -500,9 +504,9 @@ States_MenuType stateFrequency(){
 	for(counterLinesLCD = 0; counterLinesLCD < 3; counterLinesLCD++){
 		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings7[counterLinesLCD]));
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
-
 
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
@@ -517,27 +521,12 @@ States_MenuType stateFrequency(){
 	return state;
 }
 
-/******************************************************************************/
-/****************************Pointer to function*******************************/
-/******************************************************************************/
-
-
-fptrState State_Functions[7] = {
-		stateDefault,
-		stateMenu,
-		stateAlarm,
-		stateFormat,
-		stateIncrement,
-		stateManual,
-		stateFrequency
-};
-
 /***********************************************************************/
 /******************************STATE MACHINES***************************/
 /***********************************************************************/
 
 typedef const struct State{
-	States_MenuType (*stateFunction)(void);
+	States_MenuType (*stateFunction)(uint32);
 
 }StateType;
 

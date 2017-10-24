@@ -19,22 +19,25 @@
 #include "Menu.h"
 #include "Configurations.h"
 
+#define CENT		(100U)
+#define MODULO		(0xFFU)
+#define INIT_MOD	(0.80F)
+
 int main(void) {
 
-	sint16 dutyCycle = 0;
-	uint8 inputValueA = 0;
-	uint8 inputPortC = 0;
+	volatile uint32 ResultADC;
+	float velocity;
 
   	States_MenuType currentState = DEFAULT;
-	States_MenuType(*mainFunctions)(void);
+	States_MenuType(*mainFunctions)(uint32);
 
 	SPI_init(&SPI_Config);
 	LCDNokia_init();
 	LCDNokia_clear();
 	Buttons_init(Buttons_Config);
 	ADC_init(&ADC_Config);
-
-	FlexTimer_OutputInit(&outputconfig,.80,0xFF);
+	FlexTimer_Init(&outputconfig,INIT_MOD,MODULO);
+	FlexTimer_Init(&inputConfig,1,MODULO);
 
 	/*DEBUG*/
 	setAllRGB();
@@ -51,14 +54,19 @@ int main(void) {
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(FTM0_IRQ,PRIORITY_9);
-
+	NVIC_enableInterruptAndPriotity(FTM2_IRQ,PRIORITY_9);
 
 	/**Enable all the interrupts **/
 	EnableInterrupts;
     while(1){
-    	//setDutyCycle(FTM_0,FTMnC0,.90);
+
+    	velocity = (float)VelocityMotor/CENT;
+
+    	setDutyCycle(FTM_0, FTMnC0, velocity);
+    	ResultADC = ADC_calculateResult(&ADC_Config);
+
     	mainFunctions = StateProgram[currentState].stateFunction;
-    	currentState = mainFunctions();
+    	currentState = mainFunctions(ResultADC);
     }
     return 0;
 }

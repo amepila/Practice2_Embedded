@@ -126,7 +126,7 @@ States_MenuType stateDefault(uint32 resultADC){
 
 	Buzzer_setAlarm(resultADC, SetAlarm);
 	resultFah = Conversion_Fahrenheit(resultADC);
-	VelocityMotor = Control_Velocity(resultADC, SetIncrement, ModeManual);
+	VelocityMotor = Control_Velocity(resultADC, SetIncrement, ModeManual, VelocityMotor);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 4; counterLinesLCD++){
 
@@ -480,7 +480,6 @@ States_MenuType stateManual(uint32 resultADC){
 			modeIncrement = TRUE;
 			VelocityMotor = Control_ManualVelocity(VelocityMotor, SetIncrement, modeIncrement);
 		}
-
 
 		Button_clearFlag(BUTTON_5);
 		GPIO_clearIRQStatus(GPIO_B);

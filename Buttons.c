@@ -174,21 +174,18 @@ float Conversion_Fahrenheit(uint32 celsius_Temp){
 	return (fahrenheit_Temp);
 }
 
-uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual){
+uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual, uint32 motor){
 
-	const uint32 first_Temp = 20;
-	const uint32 first_Vel = 80;
 	const uint32 limit_Vel = 85;
-
 	static uint32 default_Temp = 20;
 	static uint32 default_Vel = 80;
-	float velocity_Scale;
 	uint32 diff_Temp;
 	sint32 velocity;
 	uint32 constant_Increment;
 	uint32 mod_Temp;
 
 	mod_Temp =  temperature % 2;
+	default_Vel = motor;
 
 	if((temperature > (default_Temp + 1)) && (FALSE == modeManual)){
 

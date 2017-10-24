@@ -23,7 +23,7 @@
 #define MODULO		(0xFFU)
 #define INIT_MOD	(0.80F)
 
-int main(void) {
+int main(void){
 
 	volatile uint32 ResultADC;
 	float velocity;

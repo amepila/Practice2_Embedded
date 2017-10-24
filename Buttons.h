@@ -57,7 +57,7 @@ void Buzzer_setAlarm(uint32 currentValue, uint32 limitConf);
 
 float Conversion_Fahrenheit(uint32 celsius_Temp);
 
-uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual);
+uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual, uint32 motor);
 
 uint32 Control_ManualVelocity(uint32 velocity, uint8 increment, uint8 modeIncrement);
 

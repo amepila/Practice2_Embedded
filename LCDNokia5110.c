@@ -202,19 +202,25 @@ void LCDNokia_printValue(uint32 value){
 	formatASCII real_Value;
 	uint8 temp_digit;
 	uint8 counter;
+	const uint8 zero = 48;
 	real_Value.numberDigits = 0;
 
-	while(value > 0){
-		temp_digit = value % 10;
-		temp_digit = '0' + temp_digit;
-		real_Value.realDigit[real_Value.numberDigits] = temp_digit;
-		value /= 10;
-		real_Value.numberDigits++;
+	if(value != 0){
+		while(value > 0){
+			temp_digit = value % 10;
+			temp_digit = '0' + temp_digit;
+			real_Value.realDigit[real_Value.numberDigits] = temp_digit;
+			value /= 10;
+			real_Value.numberDigits++;
+		}
+
+		for(counter = real_Value.numberDigits; counter != 0 ; counter--){
+			LCDNokia_sendChar(real_Value.realDigit[counter-1]);
+		}
+	}else{
+		LCDNokia_sendChar(zero);
 	}
 
-	for(counter = real_Value.numberDigits; counter != 0 ; counter--){
-		LCDNokia_sendChar(real_Value.realDigit[counter-1]);
-	}
 }
 
 void LCDNokia_printFloatValue(float value){

@@ -240,10 +240,10 @@ uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual){
 
 uint32 Control_ManualVelocity(uint32 velocity, uint8 increment, uint8 modeIncrement){
 
-	const uint32 limit_Max = 85;
-	const uint32 limit_Min = 0;
+	const sint32 limit_Max = 85;
+	const sint32 limit_Min = 0;
 
-	static uint32 default_Velocity;
+	static sint32 default_Velocity;
 
 	default_Velocity = velocity;
 

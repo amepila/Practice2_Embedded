@@ -246,6 +246,6 @@ uint16 getControlValueControl();
  	 \return uint16
  */
 uint16 getCurrentCountValue();
-
+uint16 getCnVDifference();
 
 #endif /* FLEXTIMER_H_ */

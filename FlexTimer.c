@@ -14,7 +14,10 @@
 
 
 uint16 CnV_CurrentValue;
-uint8 CurrentValue_SendControl;
+uint8 CurrentValue_SendControl = 0;
+uint32 Freq = 0;
+uint16 CnV_Difference_Calc = 0;
+uint16 CnV_Difference = 0;
 
 
 void GPIOForFTMInit(){
@@ -282,9 +285,45 @@ void channelInterruptEnable(FTMmodule module, FTMchannel channel, ChInterrupt ch
 	}
 }
 
+void clearChannelFlag(FTMmodule module, FTMchannel channel){
+
+	switch(module){
+	case FTM_0:
+		FTM0->CONTROLS[channel].CnSC&=~(BIT_OFF<<BIT7);
+		break;
+	case FTM_1:
+		FTM1->CONTROLS[channel].CnSC&=~(BIT_OFF<<BIT7);
+		break;
+	case FTM_2:
+		FTM2->CONTROLS[channel].CnSC&=~(BIT_ON<<BIT7);
+		break;
+	case FTM_3:
+		FTM3->CONTROLS[channel].CnSC&=~(BIT_OFF<<BIT7);
+		break;
+	default:
+		break;
+	}
+}
+
 uint8 getChannelInterrupt(FTMmodule module, FTMchannel channel){
 
-	return 0;
+	switch(module){
+	case FTM_0:
+		return (FTM0->CONTROLS[channel].CnSC & BIT_ON<<7);
+		break;
+	case FTM_1:
+		return FTM1->CONTROLS[channel].CnSC & BIT_ON<<7;
+		break;
+	case FTM_2:
+		return 	(FTM2->CONTROLS[channel].CnSC & BIT_ON<<7);
+		break;
+	case FTM_3:
+		return	FTM3->CONTROLS[channel].CnSC & BIT_ON<<7;
+		break;
+	default:
+		return 0;
+		break;
+	}
 }
 
 uint16 getCountValue(FTMmodule module, FTMchannel channel){
@@ -327,6 +366,10 @@ uint16 getControlValueControl(){
 	return CurrentValue_SendControl;
 }
 
+uint16 getCnVDifference(){
+
+	return CnV_Difference;
+}
 
 void FTM0_ISR(){
 
@@ -335,21 +378,57 @@ void FTM0_ISR(){
 }
 
 
-void FTM2_IRQHANDLER(){
-/*	if(CurrentValue_SendControl==0){
+void FTM2_IRQHandler(){
+
+	uint32 test2 = 0;
+/*	if(currentValueSendControl==0){
 		sendCountValue(getCountValue(FTM_2,FTMnC0));
 	}
-	if(CurrentValue_SendControl==1){
+	if(currentValueSendControl==1){
 		sendCountValue(getCountValue)
 	}*/
-
+	/*int testValue=getCountValue(FTM_2,FTMnC0);
+	float div1=21000000/(2);
+	float div2=testValue/div1;
+	float div3=(1/div2);
 	setCurrentCountValue(getCountValue(FTM_2,FTMnC0));
-	CurrentValue_SendControl++;
-
-	if(CurrentValue_SendControl > 1){
-		CurrentValue_SendControl=0;
+	if(getControlValueControl()==0){
+				testValue=getCurrentCountValue();
+				printf("%d\n",testValue);
 	}
-	//Blue();
+	setCurrentCountValue(getCountValue(FTM_2,FTMnC0));
+	if(getControlValueControl()==1){
+				testValue=getCurrentCountValue();
+				printf("%d\n",testValue);
+		}
+	currentValueSendControl++;
+	if(currentValueSendControl>1){
+		currentValueSendControl=0;
+	}
+	clearChannelFlag(FTM_2,FTMnC0);
+	*/
+
+	if((FTM2->CONTROLS[0].CnSC & (BIT_ON<<7)) == (BIT_ON<<7)){
+	//	clearAllRGB();
+		if(FALSE == getControlValueControl()){
+			//Blue();
+			CnV_Difference_Calc = FTM2->CONTROLS[0].CnV;
+		}
+		else if(TRUE == getControlValueControl()){
+			//Red();
+			CnV_Difference_Calc = (FTM2->CONTROLS[0].CnV)-(CnV_Difference);
+		}
+		CurrentValue_SendControl++;
+
+			if(CurrentValue_SendControl > 1){
+				FTM2->CNT = 0;
+				CurrentValue_SendControl = 0;
+				CnV_Difference = CnV_Difference_Calc;
+				CnV_Difference_Calc = 0;
+			}
+
+		clearChannelFlag(FTM_2,FTMnC0);
+	}
 }
 
 void FlexTimer_Init(const FTM_Config* config, float initValue, uint16 initModuloValue){

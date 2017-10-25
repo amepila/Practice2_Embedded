@@ -27,6 +27,7 @@ int main(void){
 
 	volatile uint32 ResultADC;
 	float velocity;
+	uint16 diff = 0; ///Temp
 
   	States_MenuType currentState = DEFAULT;
 	States_MenuType(*mainFunctions)(uint32);
@@ -53,7 +54,7 @@ int main(void){
 	NVIC_enableInterruptAndPriotity(PORTA_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_4);
-	NVIC_enableInterruptAndPriotity(FTM0_IRQ,PRIORITY_9);
+	NVIC_enableInterruptAndPriotity(FTM0_IRQ,PRIORITY_8);
 	NVIC_enableInterruptAndPriotity(FTM2_IRQ,PRIORITY_9);
 
 	/**Enable all the interrupts **/
@@ -61,9 +62,9 @@ int main(void){
     while(1){
 
     	velocity = (float)VelocityMotor/CENT;
-
     	setDutyCycle(FTM_0, FTMnC0, velocity);
     	ResultADC = ADC_calculateResult(&ADC_Config);
+    	//diff = getCnVDifference();
 
     	mainFunctions = StateProgram[currentState].stateFunction;
     	currentState = mainFunctions(ResultADC);

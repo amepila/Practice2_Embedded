@@ -73,14 +73,14 @@ void Green(void){
 }
 void Blue(void){
 	/**Leds Off**/
-	GPIO_setPIN(GPIO_B, BIT21);
-	GPIO_setPIN(GPIO_B, BIT22);
-	GPIO_setPIN(GPIO_E, BIT26);
-	delay(L);
+	//GPIO_setPIN(GPIO_B, BIT21);
+	//GPIO_setPIN(GPIO_B, BIT22);
+	//GPIO_setPIN(GPIO_E, BIT26);
+	//delay(L);
 
 	/**Led On **/
 	GPIO_clearPIN(GPIO_B, BIT21);
-	delay(L);
+	//delay(L);
 
 	/*Led Off*/
 	//GPIO_setPIN(GPIO_B, BIT21);
@@ -88,18 +88,18 @@ void Blue(void){
 }
 void Red(void){
 	/**Leds Off**/
-	GPIO_setPIN(GPIO_B, BIT21);
-	GPIO_setPIN(GPIO_B, BIT22);
-	GPIO_setPIN(GPIO_E, BIT26);
-	delay(L);
+	//GPIO_setPIN(GPIO_B, BIT21);
+	//GPIO_setPIN(GPIO_B, BIT22);
+	//GPIO_setPIN(GPIO_E, BIT26);
+	//delay(L);
 
 	/**Led On **/
 	GPIO_clearPIN(GPIO_B, BIT22);
-	delay(L);
+	//delay(L);
 
 	/**Led Off **/
-	GPIO_setPIN(GPIO_B, BIT22);
-	delay(S);
+	//GPIO_setPIN(GPIO_B, BIT22);
+	//delay(S);
 }
 void Purple(void){
 	/**Leds Off**/

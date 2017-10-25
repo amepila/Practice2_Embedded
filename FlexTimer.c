@@ -14,10 +14,11 @@
 
 
 uint16 CnV_CurrentValue;
-uint8 CurrentValue_SendControl = 0;
+uint8 CurrentValue_SendControl = FALSE;
 uint32 Freq = 0;
 uint16 CnV_Difference_Calc = 0;
 uint16 CnV_Difference = 0;
+uint8 duty = 0;
 
 
 void GPIOForFTMInit(){
@@ -289,16 +290,16 @@ void clearChannelFlag(FTMmodule module, FTMchannel channel){
 
 	switch(module){
 	case FTM_0:
-		FTM0->CONTROLS[channel].CnSC&=~(BIT_OFF<<BIT7);
+		FTM0->CONTROLS[channel].CnSC &= ~(BIT_ON<<BIT7);
 		break;
 	case FTM_1:
-		FTM1->CONTROLS[channel].CnSC&=~(BIT_OFF<<BIT7);
+		FTM1->CONTROLS[channel].CnSC &= ~(BIT_ON<<BIT7);
 		break;
 	case FTM_2:
-		FTM2->CONTROLS[channel].CnSC&=~(BIT_ON<<BIT7);
+		FTM2->CONTROLS[channel].CnSC &= ~(BIT_ON<<BIT7);
 		break;
 	case FTM_3:
-		FTM3->CONTROLS[channel].CnSC&=~(BIT_OFF<<BIT7);
+		FTM3->CONTROLS[channel].CnSC &= ~(BIT_ON<<BIT7);
 		break;
 	default:
 		break;
@@ -309,16 +310,16 @@ uint8 getChannelInterrupt(FTMmodule module, FTMchannel channel){
 
 	switch(module){
 	case FTM_0:
-		return (FTM0->CONTROLS[channel].CnSC & BIT_ON<<7);
+		return	(FTM0->CONTROLS[channel].CnSC & BIT_ON<<7);
 		break;
 	case FTM_1:
-		return FTM1->CONTROLS[channel].CnSC & BIT_ON<<7;
+		return	(FTM1->CONTROLS[channel].CnSC & BIT_ON<<7);
 		break;
 	case FTM_2:
-		return 	(FTM2->CONTROLS[channel].CnSC & BIT_ON<<7);
+		return	(FTM2->CONTROLS[channel].CnSC & BIT_ON<<7);
 		break;
 	case FTM_3:
-		return	FTM3->CONTROLS[channel].CnSC & BIT_ON<<7;
+		return	(FTM3->CONTROLS[channel].CnSC & BIT_ON<<7);
 		break;
 	default:
 		return 0;
@@ -380,42 +381,14 @@ void FTM0_ISR(){
 
 void FTM2_IRQHandler(){
 
-	uint32 test2 = 0;
-/*	if(currentValueSendControl==0){
-		sendCountValue(getCountValue(FTM_2,FTMnC0));
-	}
-	if(currentValueSendControl==1){
-		sendCountValue(getCountValue)
-	}*/
-	/*int testValue=getCountValue(FTM_2,FTMnC0);
-	float div1=21000000/(2);
-	float div2=testValue/div1;
-	float div3=(1/div2);
-	setCurrentCountValue(getCountValue(FTM_2,FTMnC0));
-	if(getControlValueControl()==0){
-				testValue=getCurrentCountValue();
-				printf("%d\n",testValue);
-	}
-	setCurrentCountValue(getCountValue(FTM_2,FTMnC0));
-	if(getControlValueControl()==1){
-				testValue=getCurrentCountValue();
-				printf("%d\n",testValue);
-		}
-	currentValueSendControl++;
-	if(currentValueSendControl>1){
-		currentValueSendControl=0;
-	}
-	clearChannelFlag(FTM_2,FTMnC0);
-	*/
+	if(((FTM2->CONTROLS[0].CnSC & (BIT_ON<<7)) == (BIT_ON<<7)) && (0 == duty)){
 
-	if((FTM2->CONTROLS[0].CnSC & (BIT_ON<<7)) == (BIT_ON<<7)){
-	//	clearAllRGB();
+		duty = 1;
+
 		if(FALSE == getControlValueControl()){
-			//Blue();
-			CnV_Difference_Calc = FTM2->CONTROLS[0].CnV;
+			CnV_Difference = FTM2->CONTROLS[0].CnV;
 		}
-		else if(TRUE == getControlValueControl()){
-			//Red();
+		else if(1 == getControlValueControl()){
 			CnV_Difference_Calc = (FTM2->CONTROLS[0].CnV)-(CnV_Difference);
 		}
 		CurrentValue_SendControl++;
@@ -426,8 +399,8 @@ void FTM2_IRQHandler(){
 				CnV_Difference = CnV_Difference_Calc;
 				CnV_Difference_Calc = 0;
 			}
-
 		clearChannelFlag(FTM_2,FTMnC0);
+		duty = 0;
 	}
 }
 

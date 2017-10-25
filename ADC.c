@@ -8,9 +8,11 @@
 #include "ADC.h"
 
 static void ADC_enable(ADC_ChannelType channel){
+	/*Selector of the ADC channel*/
 	switch(channel){
+	/**ADC0 is selected**/
 	case ADC_0:
-        SIM->SCGC6 |= SIM_SCGC6_ADC0_MASK;
+        SIM->SCGC6 |= SIM_SCGC6_ADC0_MASK;/**Bit**/
         break;
 	case ADC_1:
 		SIM->SCGC3 |= SIM_SCGC3_ADC1_MASK;

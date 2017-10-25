@@ -27,7 +27,6 @@ int main(void){
 
 	volatile uint32 ResultADC;
 	float velocity;
-	uint16 diff = 0; ///Temp
 
   	States_MenuType currentState = DEFAULT;
 	States_MenuType(*mainFunctions)(uint32);
@@ -64,7 +63,6 @@ int main(void){
     	velocity = (float)VelocityMotor/CENT;
     	setDutyCycle(FTM_0, FTMnC0, velocity);
     	ResultADC = ADC_calculateResult(&ADC_Config);
-    	//diff = getCnVDifference();
 
     	mainFunctions = StateProgram[currentState].stateFunction;
     	currentState = mainFunctions(ResultADC);

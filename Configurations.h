@@ -105,6 +105,8 @@ const uint8 SymbolGrades = 39;
 const uint8 SymbolPercen = 37;
 const uint8 wordC = 67;
 const uint8 wordF = 70;
+const uint8 wordH = 72;
+const uint8 wordz = 122;
 
 uint32 VelocityMotor = 80;
 
@@ -150,7 +152,6 @@ States_MenuType stateDefault(uint32 resultADC){
 			LCDNokia_sendChar(SymbolGrades);
 			LCDNokia_sendChar(wordF);
 		}
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -172,7 +173,6 @@ States_MenuType stateMenu(uint32 resultADC){
 		LCDNokia_gotoXY(0,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings2[counterLinesLCD]));
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -233,7 +233,6 @@ States_MenuType stateAlarm(uint32 resultADC){
 			LCDNokia_printValue(tmpConfig_Alarm);
 			LCDNokia_sendChar(SymbolGrades);
 		}
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -304,7 +303,6 @@ States_MenuType stateFormat(uint32 resultADC){
 				LCDNokia_sendChar(wordF);
 			}
 		}
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -364,7 +362,6 @@ States_MenuType stateIncrement(uint32 resultADC){
 			LCDNokia_sendChar(SymbolPercen);
 
 		}
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -426,7 +423,6 @@ States_MenuType stateManual(uint32 resultADC){
 			LCDNokia_printValue(VelocityMotor);
 			LCDNokia_sendChar(SymbolPercen);
 		}
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		delay(2000);
 	}
 
@@ -492,11 +488,19 @@ States_MenuType stateFrequency(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = FREQUENCY;
+	uint16 frequency = 0;
+
+	//Function of input capture with signal generator
+	frequency = getCnVDifference();
 
 	for(counterLinesLCD = 0; counterLinesLCD < 3; counterLinesLCD++){
 		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings7[counterLinesLCD]));
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		if(2 == counterLinesLCD){
+			LCDNokia_gotoXY(35,counterLinesLCD);
+			LCDNokia_printValue(FTM2->CONTROLS[0].CnV);
+		}
 		delay(2000);
 	}
 
@@ -507,7 +511,6 @@ States_MenuType stateFrequency(uint32 resultADC){
 		Button_clearFlag(BUTTON_0);
 		GPIO_clearIRQStatus(GPIO_C);
 		LCDNokia_clear();
-
 	}
 
 	return state;

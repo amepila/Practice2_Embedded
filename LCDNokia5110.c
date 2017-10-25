@@ -237,26 +237,33 @@ void LCDNokia_printFloatValue(float value){
 	part_Int = (uint8)value;
 
 
-	if(part_Float < 10){
+	if(value != 0){
+		if(part_Float < 10){
 
-		LCDNokia_printValue(part_Int);
-		LCDNokia_sendChar(wordPoint);
+			LCDNokia_printValue(part_Int);
+			LCDNokia_sendChar(wordPoint);
 
+			LCDNokia_sendChar(numZero);
+			LCDNokia_printValue(part_Float);
+		}
+		if(part_Float == 0){
+
+			LCDNokia_printValue(part_Int);
+			LCDNokia_sendChar(wordPoint);
+
+			LCDNokia_sendChar(numZero);
+			LCDNokia_sendChar(numZero);
+		}
+		if(part_Float >= 10){
+
+			LCDNokia_printValue(part_Int);
+			LCDNokia_sendChar(wordPoint);
+			LCDNokia_printValue(part_Float);
+		}
+	}else{
 		LCDNokia_sendChar(numZero);
-		LCDNokia_printValue(part_Float);
-	}
-	if(part_Float == 0){
-
-		LCDNokia_printValue(part_Int);
 		LCDNokia_sendChar(wordPoint);
-
 		LCDNokia_sendChar(numZero);
 		LCDNokia_sendChar(numZero);
-	}
-	if(part_Float >= 10){
-
-		LCDNokia_printValue(part_Int);
-		LCDNokia_sendChar(wordPoint);
-		LCDNokia_printValue(part_Float);
 	}
 }

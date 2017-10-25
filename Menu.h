@@ -49,9 +49,7 @@
 
 	uint8 FrequencyMenu1[]="Frecuencia";
 	uint8 FrequencyMenu2[]="(Hz)";
-	uint8 FrequencyMenu3[]=" ";
-
-
+	uint8 FrequencyMenu3[]="";
 
 
 	uint8 *Sub_ArrayStrings1[4]= {
@@ -99,7 +97,7 @@
 			ManualMenu6
 	};
 
-	uint8 *Sub_ArrayStrings7[3]= {
+	uint8 *Sub_ArrayStrings7[2]= {
 			FrequencyMenu1,
 			FrequencyMenu2,
 			FrequencyMenu3

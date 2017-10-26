@@ -256,3 +256,94 @@ uint32 Control_ManualVelocity(uint32 velocity, uint8 increment, uint8 modeIncrem
 
 	return (default_Velocity);
 }
+
+
+uint32 Calculate_Frequency(uint16 value){
+
+	const sint16 Range10K = 2100;
+	const sint16 Range15K = 1400;
+	const sint16 Range20K = 1024;
+	const sint16 Range25K = 840;
+	const sint16 Range30K = 700;
+	const sint16 Range35K = 600;
+	const sint16 Range40K = 525;
+	const sint16 Range45K = 466;
+	const sint16 Range50K = 420;
+	const sint16 Range55K = 381;
+	const sint16 Range60K = 350;
+	const sint16 Range65K = 323;
+	const sint16 Range70K = 300;
+	const sint16 Range75K = 280;
+	const sint16 Range80K = 262;
+	const sint16 Range85K = 247;
+	const sint16 Range90K = 233;
+	const sint16 Range95K = 221;
+	const sint16 Range100K = 210;
+
+
+	static uint32 frequency = 0;
+
+	if((value > 200)&&(value < 2150)){
+		if((value > Range10K - 250) && (value < Range10K + 250)){
+			frequency = 10000;
+		}
+		if((value > Range15K - 200) && (value < Range15K + 200)){
+			frequency = 15000;
+		}
+		if((value > Range20K - 200) && (value < Range20K + 200)){
+			frequency = 20000;
+		}
+		if((value > Range25K - 200) && (value < Range25K + 200)){
+			frequency = 25000;
+		}
+		if((value > Range30K - 150) && (value < Range30K + 150)){
+			frequency = 30000;
+		}
+		if((value > Range35K - 100) && (value < Range35K + 100)){
+			frequency = 35000;
+		}
+		if((value > Range40K - 100) && (value < Range40K + 100)){
+			frequency = 40000;
+		}
+		if((value > Range45K - 50) && (value < Range45K + 50)){
+			frequency = 45000;
+		}
+		if((value > Range50K - 50) && (value < Range50K + 50)){
+			frequency = 50000;
+		}
+		if((value > Range55K - 25) && (value < Range55K + 25)){
+			frequency = 55000;
+		}
+		if((value > Range60K - 25) && (value < Range60K + 25)){
+			frequency = 60000;
+		}
+		if((value > Range65K - 25) && (value < Range65K + 25)){
+			frequency = 65000;
+		}
+		if((value > Range70K - 25) && (value < Range70K + 25)){
+			frequency = 70000;
+		}
+		if((value > Range75K - 20) && (value < Range75K + 20)){
+			frequency = 75000;
+		}
+		if((value > Range80K - 20) && (value < Range80K + 20)){
+			frequency = 80000;
+		}
+		if((value > Range85K - 20) && (value < Range85K - 20)){
+			frequency = 85000;
+		}
+		if((value > Range90K - 20) && (value < Range90K + 20)){
+			frequency = 90000;
+		}
+		if((value > Range95K - 15) && (value < Range95K + 15)){
+			frequency = 95000;
+		}
+		if((value > Range100K - 15) && (value < Range100K + 15)){
+			frequency = 100000;
+		}
+	}else{
+		frequency = 0;
+	}
+	return frequency;
+}
+

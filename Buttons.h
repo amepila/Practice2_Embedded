@@ -12,6 +12,7 @@
 #include "DataTypeDefinitions.h"
 #include "GPIO.h"
 
+#define SYSTEM_CLOCK	(21000000U)
 
 typedef enum{
 	BUTTON_0,
@@ -41,6 +42,7 @@ typedef struct{
 }Button_ConfigType;
 
 
+
 //static void Button_clock(Button_PortType);
 
 //static void Button_enable(Button_PortType,BitsType);
@@ -60,5 +62,8 @@ float Conversion_Fahrenheit(uint32 celsius_Temp);
 uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual, uint32 motor);
 
 uint32 Control_ManualVelocity(uint32 velocity, uint8 increment, uint8 modeIncrement);
+
+uint32 Calculate_Frequency(uint16 value);
+
 
 #endif /* BUTTONS_H_ */

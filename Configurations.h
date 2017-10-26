@@ -18,6 +18,8 @@
 #include "Colors.h"
 #include "FlexTimer.h"
 
+#define LENGHT		(2000U)
+
 
 typedef enum{
 	DEFAULT,
@@ -86,7 +88,7 @@ const FTM_Config inputConfig = {
 							DISABLE_WRITEPROTECTION,
 							SYSTEMCLOCK,
 							DISABLE_FTM,
-							PS_2,
+							PS_1,
 							ENABLE_TOIF,
 							DISABLE_MSA,
 							DISABLE_MSB,
@@ -118,7 +120,6 @@ uint8 ModeManual = FALSE;
 /***********************************************************************/
 /*****************************MAIN FUNCTIONS****************************/
 /***********************************************************************/
-
 
 States_MenuType stateDefault(uint32 resultADC){
 
@@ -152,7 +153,7 @@ States_MenuType stateDefault(uint32 resultADC){
 			LCDNokia_sendChar(SymbolGrades);
 			LCDNokia_sendChar(wordF);
 		}
-		delay(2000);
+		//delay(LENGHT);
 	}
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
@@ -173,7 +174,7 @@ States_MenuType stateMenu(uint32 resultADC){
 		LCDNokia_gotoXY(0,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings2[counterLinesLCD]));
 
-		delay(2000);
+		//delay(LENGHT);
 	}
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
@@ -233,7 +234,7 @@ States_MenuType stateAlarm(uint32 resultADC){
 			LCDNokia_printValue(tmpConfig_Alarm);
 			LCDNokia_sendChar(SymbolGrades);
 		}
-		delay(2000);
+		//delay(LENGHT);
 	}
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
@@ -303,7 +304,7 @@ States_MenuType stateFormat(uint32 resultADC){
 				LCDNokia_sendChar(wordF);
 			}
 		}
-		delay(2000);
+		//delay(LENGHT);
 	}
 
 
@@ -362,7 +363,7 @@ States_MenuType stateIncrement(uint32 resultADC){
 			LCDNokia_sendChar(SymbolPercen);
 
 		}
-		delay(2000);
+		//delay(LENGHT);
 	}
 
 	if((TRUE == GPIO_getIRQStatus(GPIO_C)) && (TRUE == Button_getFlag(BUTTON_0))){
@@ -423,7 +424,7 @@ States_MenuType stateManual(uint32 resultADC){
 			LCDNokia_printValue(VelocityMotor);
 			LCDNokia_sendChar(SymbolPercen);
 		}
-		delay(2000);
+		//delay(LENGHT);
 	}
 
 
@@ -488,20 +489,21 @@ States_MenuType stateFrequency(uint32 resultADC){
 
 	uint8 counterLinesLCD;
 	States_MenuType state = FREQUENCY;
-	uint16 frequency = 0;
+	uint32 frequency = 0;
+	uint16 value_Capture;
 
-	//Function of input capture with signal generator
-	frequency = getCnVDifference();
+	value_Capture = getCnVDifference();
+	frequency = Calculate_Frequency(value_Capture);
 
 	for(counterLinesLCD = 0; counterLinesLCD < 3; counterLinesLCD++){
 		LCDNokia_gotoXY(7,counterLinesLCD);
 		LCDNokia_sendString((uint8*)(Sub_ArrayStrings7[counterLinesLCD]));
 
 		if(2 == counterLinesLCD){
-			LCDNokia_gotoXY(35,counterLinesLCD);
-			LCDNokia_printValue(FTM2->CONTROLS[0].CnV);
+			LCDNokia_gotoXY(15,counterLinesLCD);
+			LCDNokia_printValue(frequency);
 		}
-		delay(2000);
+		//delay(LENGHT);
 	}
 
 

@@ -19,9 +19,10 @@
 #include "Menu.h"
 #include "Configurations.h"
 
-#define CENT		(100U)
-#define MODULO		(0xFFU)
-#define INIT_MOD	(0.80F)
+#define CENT			(100U)
+#define MODULO			(0xFFU)
+#define MODULO_CAPTURE	(0xFFFFU)
+#define INIT_MOD		(0.80F)
 
 int main(void){
 
@@ -37,7 +38,7 @@ int main(void){
 	Buttons_init(Buttons_Config);
 	ADC_init(&ADC_Config);
 	FlexTimer_Init(&outputconfig,INIT_MOD,MODULO);
-	FlexTimer_Init(&inputConfig,1,MODULO);
+	FlexTimer_Init(&inputConfig,1,MODULO_CAPTURE);
 
 	/*DEBUG*/
 	setAllRGB();

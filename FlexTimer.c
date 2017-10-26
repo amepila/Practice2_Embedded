@@ -15,11 +15,7 @@
 
 uint16 CnV_CurrentValue;
 uint8 CurrentValue_SendControl = FALSE;
-uint32 Freq = 0;
-uint16 CnV_Difference_Calc = 0;
 uint16 CnV_Difference = 0;
-uint8 duty = 0;
-
 
 void GPIOForFTMInit(){
 
@@ -31,7 +27,11 @@ void GPIOForFTMInit(){
 
 	GPIO_pinControlRegisterType pinControlRegisterPORTB18 = GPIO_MUX3;
 
+	GPIO_pinControlRegisterType pinControlRegisterPORTB19 = GPIO_MUX3;
+
 	GPIO_pinControlRegister(GPIO_B, BIT18, &pinControlRegisterPORTB18);
+
+	GPIO_pinControlRegister(GPIO_B, BIT19, &pinControlRegisterPORTB19);
 
 	GPIO_pinControlRegister(GPIO_C, BIT1, &pinControlRegisterPORTC1);
 
@@ -39,6 +39,8 @@ void GPIOForFTMInit(){
 
 	//PIN C 5 FTM0 ch2
 	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT18);
+
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT19);
 
 }
 
@@ -381,26 +383,26 @@ void FTM0_ISR(){
 
 void FTM2_IRQHandler(){
 
-	if(((FTM2->CONTROLS[0].CnSC & (BIT_ON<<7)) == (BIT_ON<<7)) && (0 == duty)){
+	static sint16 value1 = 0;
+	static sint16 value2 = 0;
 
-		duty = 1;
+	if((FTM2->CONTROLS[0].CnSC & (BIT_ON<<7)) == (BIT_ON<<7)){
 
 		if(FALSE == getControlValueControl()){
-			CnV_Difference = FTM2->CONTROLS[0].CnV;
+			value1 = FTM2->CONTROLS[0].CnV;
 		}
-		else if(1 == getControlValueControl()){
-			CnV_Difference_Calc = (FTM2->CONTROLS[0].CnV)-(CnV_Difference);
+		if(1 == getControlValueControl()){
+			value2 = FTM2->CONTROLS[0].CnV;
 		}
+
 		CurrentValue_SendControl++;
 
-			if(CurrentValue_SendControl > 1){
-				FTM2->CNT = 0;
-				CurrentValue_SendControl = 0;
-				CnV_Difference = CnV_Difference_Calc;
-				CnV_Difference_Calc = 0;
-			}
+		if(CurrentValue_SendControl > 1){
+			FTM2->CNT = FLEX_RESET;
+			CurrentValue_SendControl = FALSE;
+			CnV_Difference = value2 - value1;
+		}
 		clearChannelFlag(FTM_2,FTMnC0);
-		duty = 0;
 	}
 }
 

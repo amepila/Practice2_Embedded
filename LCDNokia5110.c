@@ -11,6 +11,7 @@
 
 
 
+
 static const uint8 ASCII[][5] =
 {
  {0x00, 0x00, 0x00, 0x00, 0x00} // 20  
@@ -191,7 +192,7 @@ void LCD_delay(void)
 {
 	int counter;
 	
-	for(counter=0; counter<1500; counter++) 
+	for(counter=0; counter<1500; counter++)
 	{	   
 		
 	}
@@ -228,42 +229,42 @@ void LCDNokia_printFloatValue(float value){
 	const uint8 numZero = 48;
 	float tmp_Float;
 	uint8 part_Float;
-	uint8 part_Int;
+	uint32 part_Int;
 
 
 	tmp_Float = value - (uint8)value;
 	tmp_Float *= 100;
 	part_Float = (uint8)tmp_Float;
 	part_Int = (uint8)value;
-
-
-	if(value != 0){
-		if(part_Float < 10){
-
-			LCDNokia_printValue(part_Int);
-			LCDNokia_sendChar(wordPoint);
-
-			LCDNokia_sendChar(numZero);
-			LCDNokia_printValue(part_Float);
-		}
-		if(part_Float == 0){
-
-			LCDNokia_printValue(part_Int);
-			LCDNokia_sendChar(wordPoint);
-
-			LCDNokia_sendChar(numZero);
-			LCDNokia_sendChar(numZero);
-		}
-		if(part_Float >= 10){
-
-			LCDNokia_printValue(part_Int);
-			LCDNokia_sendChar(wordPoint);
-			LCDNokia_printValue(part_Float);
-		}
-	}else{
+/*
+	if(value == 0){
 		LCDNokia_sendChar(numZero);
 		LCDNokia_sendChar(wordPoint);
 		LCDNokia_sendChar(numZero);
 		LCDNokia_sendChar(numZero);
+	}*/
+
+	if(part_Float < 10){
+
+		LCDNokia_printValue(part_Int);
+		LCDNokia_sendChar(wordPoint);
+
+		LCDNokia_sendChar(numZero);
+		LCDNokia_printValue(part_Float);
 	}
+	if(part_Float == 0){
+
+		//LCDNokia_printValue(part_Int);
+		//LCDNokia_sendChar(wordPoint);
+
+		//LCDNokia_sendChar(numZero);
+		//LCDNokia_sendChar(numZero);
+	}
+	if(part_Float >= 10){
+
+		LCDNokia_printValue(part_Int);
+		LCDNokia_sendChar(wordPoint);
+		LCDNokia_printValue(part_Float);
+	}
+
 }

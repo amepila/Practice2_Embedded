@@ -66,6 +66,7 @@
 #define  FLEX_TIMER_MSB   			0x20
 #define  FLEX_TIMER_CHIE  			0x40
 #define  FLEX_TIMER_CHF   			0x80
+#define  FLEX_RESET					0x0000
 
 typedef enum {FTM_0,FTM_1,FTM_2,FTM_3} FTMmodule;
 

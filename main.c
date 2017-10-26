@@ -26,6 +26,8 @@
 
 int main(void){
 
+
+
 	volatile uint32 ResultADC;
 	float velocity;
 
@@ -35,6 +37,7 @@ int main(void){
 	SPI_init(&SPI_Config);
 	LCDNokia_init();
 	LCDNokia_clear();
+	Buzzer_init();
 	Buttons_init(Buttons_Config);
 	ADC_init(&ADC_Config);
 	FlexTimer_Init(&outputconfig,INIT_MOD,MODULO);
@@ -56,6 +59,7 @@ int main(void){
 	NVIC_enableInterruptAndPriotity(PORTC_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(FTM0_IRQ,PRIORITY_8);
 	NVIC_enableInterruptAndPriotity(FTM2_IRQ,PRIORITY_9);
+
 
 	/**Enable all the interrupts **/
 	EnableInterrupts;

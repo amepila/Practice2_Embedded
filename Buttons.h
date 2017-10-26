@@ -57,6 +57,8 @@ void Buttons_init(const Button_ConfigType*);
 
 void Buzzer_setAlarm(uint32 currentValue, uint32 limitConf);
 
+void Buzzer_init();
+
 float Conversion_Fahrenheit(uint32 celsius_Temp);
 
 uint32 Control_Velocity(uint32 temperature, uint8 increment, uint8 modeManual, uint32 motor);

@@ -14,8 +14,11 @@
 
 
 uint16 CnV_CurrentValue;
+
 uint8 CurrentValue_SendControl = FALSE;
+
 uint16 CnV_Difference = 0;
+
 
 void GPIOForFTMInit(){
 

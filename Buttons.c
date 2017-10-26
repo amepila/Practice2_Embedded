@@ -159,11 +159,22 @@ void Buttons_init(const Button_ConfigType* Button_Config){
 }
 
 void Buzzer_setAlarm(uint32 current_Value, uint32 limit_Conf){
-	if(limit_Conf == current_Value){
-		GPIO_clearPIN(GPIO_A,BIT0);
+
+	if(current_Value >= limit_Conf){
+		GPIO_clearPIN(GPIO_C,BIT4);
 	}else{
-		GPIO_setPIN(GPIO_A,BIT0);
+		GPIO_setPIN(GPIO_C,BIT4);
 	}
+}
+
+void Buzzer_init(){
+	static GPIO_pinControlRegisterType pinControlRegisterPortA = GPIO_MUX1;
+
+	GPIO_clockGating(GPIO_C);
+
+	GPIO_pinControlRegister(GPIO_C,BIT4,&pinControlRegisterPortA);
+	GPIO_dataDirectionPIN(GPIO_C,GPIO_OUTPUT,BIT4);
+	GPIO_writePORT(GPIO_C,BIT4);
 }
 
 float Conversion_Fahrenheit(uint32 celsius_Temp){

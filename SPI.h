@@ -125,14 +125,28 @@ typedef struct
 //static void SPI_baudRate(SPI_ChannelType channel, uint32 baudRate);
 /*It selects if MSB or LSM bits is first transmitted*/
 //static void SPI_mSBFirst(SPI_ChannelType channel, SPI_LSMorMSBType msb);
-/*It stars the SPI transmission by modifying the value of HALT bit*/
+
+
+/*\brief It stars the SPI transmission by modifying the value of HALT bit
+ * \param[in] The SPI channel that starts the transference
+ *
+ * */
 void SPI_startTranference(SPI_ChannelType channel);
-/*It stops the SPI transmission by modifying the value of HALT bit*/
+/**/
+/*\brief It stops the SPI transmission by modifying the value of HALT bit
+ * \param[in] The SPI channel that stops the transference.
+ *
+ * */
 void SPI_stopTranference(SPI_ChannelType channel);
-/*It transmits the information contained in data*/
+/**
+ * \brief *It transmits the information contained in data
+ *\param[in] Data to be transfered
+ */
 void SPI_sendOneByte(uint8 Data);
-/*It configures the SPI for transmission, this function as arguments receives a pointer to a constant structure where are all 
- * the configuration parameters*/
+/*\briefIt configures the SPI for transmission, this function as arguments receives a pointer to a constant structure where are all
+ * the configuration parameters
+ * \param[in] Recieves the configuration structure.
+ **/
 void SPI_init(const SPI_ConfigType*);
 
 

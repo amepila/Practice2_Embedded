@@ -11,29 +11,30 @@
 #include "SPI.h"
 #include "FlexTimer.h"
 #include "ADC.h"
-#include "Colors.h"
-#include "PIT.h"
 #include "NVIC.h"
 #include "Buttons.h"
-#include "Keyboard.h"
 #include "Menu.h"
 #include "Configurations.h"
 
+/*Factor to convert the velocity in float*/
 #define CENT			(100U)
+/*The modulo of output FTM*/
 #define MODULO			(0xFFU)
+/*The modulo of input FTM*/
 #define MODULO_CAPTURE	(0xFFFFU)
+/*Init mode to output FTM*/
 #define INIT_MOD		(0.80F)
 
 int main(void){
 
-
-
 	volatile uint32 ResultADC;
 	float velocity;
 
+	/**First state in the program**/
   	States_MenuType currentState = DEFAULT;
 	States_MenuType(*mainFunctions)(uint32);
 
+	/**Configurations of devices**/
 	SPI_init(&SPI_Config);
 	LCDNokia_init();
 	LCDNokia_clear();
@@ -42,9 +43,6 @@ int main(void){
 	ADC_init(&ADC_Config);
 	FlexTimer_Init(&outputconfig,INIT_MOD,MODULO);
 	FlexTimer_Init(&inputConfig,1,MODULO_CAPTURE);
-
-	/*DEBUG*/
-	setAllRGB();
 
 	/*********************************/
 	/***INTERRUPTIONS CONFIGURATION***/
@@ -65,10 +63,14 @@ int main(void){
 	EnableInterrupts;
     while(1){
 
+    	/**Calculate the velocity of motor**/
     	velocity = (float)VelocityMotor/CENT;
+    	/**Calculate the pwm signal**/
     	setDutyCycle(FTM_0, FTMnC0, velocity);
+    	/**Calculate the ADC**/
     	ResultADC = ADC_calculateResult(&ADC_Config);
 
+    	/**Machine states based on tags**/
     	mainFunctions = StateProgram[currentState].stateFunction;
     	currentState = mainFunctions(ResultADC);
     }

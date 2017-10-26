@@ -15,7 +15,6 @@
 #include "MK64F12.h"
 #include "DataTypeDefinitions.h"
 #include "GPIO.h"
-#include "Colors.h"
 #include <stdio.h>
 
 

@@ -43,7 +43,7 @@ void LCDNokia_bitmap(const uint8*);
 void LCDNokia_sendChar(uint8);
 /*It write a string into the LCD*/
 void LCDNokia_sendString(uint8*);
-/*It used in the initialisation routine*/
+/*It used in the initialization routine*/
 void LCD_delay(void);
 
 

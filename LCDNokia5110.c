@@ -200,21 +200,33 @@ void LCD_delay(void)
 
 void LCDNokia_printValue(uint32 value){
 
+	/**Data Type that saves the real value**/
 	formatASCII real_Value;
+	/**Temporal digit that is an acumulator**/
 	uint8 temp_digit;
+	/**Counter of digits**/
 	uint8 counter;
+	/**Value of Zero in ASCII**/
 	const uint8 zero = 48;
+	/**Init the number of digits at 0**/
 	real_Value.numberDigits = 0;
 
+	/**While the value != 0**/
 	if(value != 0){
 		while(value > 0){
+			/**Save the modulo**/
 			temp_digit = value % 10;
+			/**The modulo is converted to ASCII**/
 			temp_digit = '0' + temp_digit;
+			/**This value is save in the real value**/
 			real_Value.realDigit[real_Value.numberDigits] = temp_digit;
+			/**Continue with the next value**/
 			value /= 10;
+			/**Real value go on with the next position**/
 			real_Value.numberDigits++;
 		}
 
+		/**Print the value saved in real value**/
 		for(counter = real_Value.numberDigits; counter != 0 ; counter--){
 			LCDNokia_sendChar(real_Value.realDigit[counter-1]);
 		}
@@ -225,25 +237,26 @@ void LCDNokia_printValue(uint32 value){
 }
 
 void LCDNokia_printFloatValue(float value){
+
+	/**Values in ASCII**/
 	const uint8 wordPoint = 46;
 	const uint8 numZero = 48;
+	/**Save the temporal Float**/
 	float tmp_Float;
+	/**Saves the two parts of a real number**/
 	uint8 part_Float;
 	uint32 part_Int;
 
-
+	/**Save the float part**/
 	tmp_Float = value - (uint8)value;
+	/**Converts the float part into integer**/
 	tmp_Float *= 100;
+	/**The float part is saved **/
 	part_Float = (uint8)tmp_Float;
+	/**The int part is saved**/
 	part_Int = (uint8)value;
-/*
-	if(value == 0){
-		LCDNokia_sendChar(numZero);
-		LCDNokia_sendChar(wordPoint);
-		LCDNokia_sendChar(numZero);
-		LCDNokia_sendChar(numZero);
-	}*/
 
+	/**Print the value smaller than 10**/
 	if(part_Float < 10){
 
 		LCDNokia_printValue(part_Int);
@@ -252,14 +265,7 @@ void LCDNokia_printFloatValue(float value){
 		LCDNokia_sendChar(numZero);
 		LCDNokia_printValue(part_Float);
 	}
-	if(part_Float == 0){
-
-		//LCDNokia_printValue(part_Int);
-		//LCDNokia_sendChar(wordPoint);
-
-		//LCDNokia_sendChar(numZero);
-		//LCDNokia_sendChar(numZero);
-	}
+	/**Print the value greater than 10**/
 	if(part_Float >= 10){
 
 		LCDNokia_printValue(part_Int);

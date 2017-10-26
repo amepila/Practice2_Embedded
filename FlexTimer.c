@@ -13,13 +13,19 @@
 #include "FlexTimer.h"
 
 
-uint16 CnV_CurrentValue;
+uint16 CnV_CurrentValue;//!< Where the channel counter value is saved after an interrupt
 
-uint8 CurrentValue_SendControl = FALSE;
-
-uint16 CnV_Difference = 0;
+uint8 CurrentValue_SendControl = FALSE;//!< Control to detect if the capture is the first or second one
 
 
+uint16 CnV_Difference = 0;//!< Where the difference in time of both raising edges is saved
+
+/**
+ * GPIOForFTMInit setup all the necessary clock gating for GPIO and switch from the default pin value to the alt3 or 4
+ * PORTB18 MUX3 is FTM2C0
+ * PORTB19 MUX3 IS FTM2C1
+ * PORTC1 MUX4 is FTM0C0
+ */
 void GPIOForFTMInit(){
 
 	GPIO_clockGating(GPIO_B);
@@ -46,7 +52,9 @@ void GPIOForFTMInit(){
 	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT19);
 
 }
-
+/**
+ * Based on the module this function will activate the respective clock gating
+ */
 void FTM_ClockGating(FTMmodule module){
 
 	switch(module){
@@ -68,6 +76,10 @@ void FTM_ClockGating(FTMmodule module){
 	}
 }
 
+/**
+ * This function will change the duty cycle of the generated Square wave by a percentage factor, this is done
+ * adding a percentage of the module value to the CnV reducing the period in which the signal is high
+ */
 void setDutyCycle(FTMmodule module, FTMchannel channel, float percent){
 
 	switch(module){
@@ -88,6 +100,10 @@ void setDutyCycle(FTMmodule module, FTMchannel channel, float percent){
 		break;
 	}
 }
+
+/**
+ * This function will allow to modify most of the values requiered in configuration by writing a 1 in WPDIS(Write Protection disable);
+ **/
 void FTMnWriteProtection(FTMmodule module, WriteProtection writeprotection){
 
 	switch(module){
@@ -109,6 +125,9 @@ void FTMnWriteProtection(FTMmodule module, WriteProtection writeprotection){
 	}
 }
 
+/**
+ * This function allows to enable the FTMen which gives access to all special registers in the FTM module
+ */
 void FTM_enable(FTMmodule module, FTM_enableControl FTMenableValue){
 
 	switch(module){
@@ -129,6 +148,10 @@ void FTM_enable(FTMmodule module, FTM_enableControl FTMenableValue){
 		break;
 	}
 }
+
+/**
+ * FTMnclockreference modify the SC register to change the reference clock for the chosen FTMmodule
+ */
 void FTMnclockReference(FTMmodule module,ClockReference clockReference){
 
 	switch(module){
@@ -149,7 +172,9 @@ void FTMnclockReference(FTMmodule module,ClockReference clockReference){
 		break;
 	}
 }
-
+/**
+ * FTMnPrescaler  this function will assign the factor to the clock
+ */
 void FTMnPrescaler(FTMmodule module, FTM_Prescaler prescaler){
 
 	switch(module){
@@ -171,7 +196,9 @@ void FTMnPrescaler(FTMmodule module, FTM_Prescaler prescaler){
 	}
 }
 
-
+/**
+ * FTMnModuloSet  this function will set a modulo value for the chosen FTM module
+ */
 void FTMnModuloSet(FTMmodule module, uint16 modulo){
 
 	switch(module){
@@ -192,7 +219,9 @@ void FTMnModuloSet(FTMmodule module, uint16 modulo){
 		break;
 	}
 }
-
+/**
+ * this function will return the modulo value, mostly used for debug
+ */
 uint16 FTMnModuloGet(FTMmodule module){
 
 	switch(module){
@@ -213,9 +242,11 @@ uint16 FTMnModuloGet(FTMmodule module){
 		return 0;
 		break;
 	}
-	//return 0;
 }
 
+/**
+ * This function will set the configuration for the Channel, based on the configurations these could be input capture, output compare and PWM(Edge aligned, Center aligned or combined)
+ */
 void channelModeSelect(FTMmodule module, FTMchannel channel, FTM_MSB MSB, FTM_MSA MSA, FTM_ELSA ELSA, FTM_ELSB ELSB){
 
 	switch(module){
@@ -269,7 +300,9 @@ void FlexTimer_updateCHValue(FTMmodule module, FTMchannel channel, float value){
 		break;
 	}
 }
-
+/**
+ * Enables the channel interrupt for the chosen module and channel
+ */
 void channelInterruptEnable(FTMmodule module, FTMchannel channel, ChInterrupt chInterrupt){
 
 	switch(module){
@@ -290,7 +323,9 @@ void channelInterruptEnable(FTMmodule module, FTMchannel channel, ChInterrupt ch
 		break;
 	}
 }
-
+/**
+ * Clear the channel flag
+ */
 void clearChannelFlag(FTMmodule module, FTMchannel channel){
 
 	switch(module){
@@ -311,6 +346,9 @@ void clearChannelFlag(FTMmodule module, FTMchannel channel){
 	}
 }
 
+/**
+ * This function returns the channel interrupts, used for the IRQHandler
+ */
 uint8 getChannelInterrupt(FTMmodule module, FTMchannel channel){
 
 	switch(module){
@@ -332,6 +370,9 @@ uint8 getChannelInterrupt(FTMmodule module, FTMchannel channel){
 	}
 }
 
+/**
+ * The CnV value is returned, useful for catching the data during input capture
+ */
 uint16 getCountValue(FTMmodule module, FTMchannel channel){
 
 	switch(module){
@@ -352,38 +393,50 @@ uint16 getCountValue(FTMmodule module, FTMchannel channel){
 		return 0;
 		break;
 	}
-	//return 0;
 }
 
+/**
+ *	loads a value to the current count value variable
+ */
 void setCurrentCountValue(uint16 countValue){
 
 	CnV_CurrentValue = countValue;
 }
 
-
+/**
+ * returns the current count value variable
+ */
 uint16 getCurrentCountValue(){
 
 	return CnV_CurrentValue;
 }
 
-
+/**
+ * returns the control variable used to manage the rising edges during capture
+ */
 uint16 getControlValueControl(){
 
 	return CurrentValue_SendControl;
 }
-
+/**
+ *returns the calculated difference of both raising edges during input capture
+ */
 uint16 getCnVDifference(){
 
 	return CnV_Difference;
 }
-
+/**
+ *  Interrupt for FTM0, this will switch the output pin value at interrupt
+ */
 void FTM0_ISR(){
 
 	FTM0->SC &= ~FLEX_TIMER_TOF;
 	GPIOD->PDOR ^= 0xFF;
 }
 
-
+/**
+ * The FTM2 IRQHandler will filter the channel interrupt to obtain raising edges during input captures.
+ */
 void FTM2_IRQHandler(){
 
 	static sint16 value1 = 0;
@@ -408,7 +461,9 @@ void FTM2_IRQHandler(){
 		clearChannelFlag(FTM_2,FTMnC0);
 	}
 }
-
+/**
+ * Configuration function recieves a configuration structure, an initial value and the initial modulo value
+ */
 void FlexTimer_Init(const FTM_Config* config, float initValue, uint16 initModuloValue){
 
 	FTM_ClockGating(config->moduleSelect);
